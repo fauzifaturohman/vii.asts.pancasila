@@ -107,6 +107,7 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:linear
 .review-item.ok{border-color:var(--hijau);background:#f3fbf7}
 .review-item.no{border-color:var(--merah);background:#fef4f4}
 .review-item.part{border-color:var(--kuning);background:#fffbeb}
+.review-item.empty{border-color:#94a3b8;background:#f8fafc}
 .review-item .rv-q{font-size:.9rem;font-weight:600;margin-bottom:7px}
 .review-item .rv-a{font-size:.85rem;color:#475569}
 .review-item .rv-a b{color:#166534}
@@ -129,7 +130,7 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:linear
 .hist .sc.low{color:var(--merah)}
 .hist small{color:var(--muted);font-size:.78rem}
 
-.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(100px);background:#1e293b;color:#fff;padding:12px 22px;border-radius:12px;font-size:.88rem;z-index:300;transition:.35s;box-shadow:0 10px 30px rgba(0,0,0,.3);opacity:0}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(100px);background:#1e293b;color:#fff;padding:12px 22px;border-radius:12px;font-size:.88rem;z-index:300;transition:.35s;box-shadow:0 10px 30px rgba(0,0,0,.3);opacity:0;max-width:90vw;text-align:center}
 .toast.on{transform:translateX(-50%) translateY(0);opacity:1}
 .hidden{display:none!important}
 .center{text-align:center}
@@ -161,7 +162,6 @@ table tr:hover td{background:#f8faff}
 .detail-row b{color:#334155}
 .detail-table{margin-top:14px}
 
-/* ---------- CLOUD SYNC UI ---------- */
 .cloud-bar{
   display:flex;align-items:center;gap:10px;flex-wrap:wrap;
   background:#f7f9fd;border:1px solid #e6ecf7;border-radius:12px;
@@ -175,7 +175,6 @@ table tr:hover td{background:#f8faff}
 .cloud-bar b{color:#334155}
 .cloud-bar .sp{margin-left:auto;display:flex;gap:8px}
 
-/* ---------- SETTINGS ---------- */
 .setup-steps{background:#f8fafc;border:1px dashed #cbd5e1;border-radius:10px;padding:12px 16px;margin:12px 0;font-size:.84rem;color:#475569}
 .setup-steps ol{padding-left:20px}
 .setup-steps li{margin-bottom:4px}
@@ -185,6 +184,14 @@ table tr:hover td{background:#f8faff}
 .cfg-status.ok{background:#dcfce7;color:#166534;border:1px solid #86efac}
 .cfg-status.err{background:#fee2e2;color:#991b1b;border:1px solid #fecaca}
 .cfg-status.info{background:#e0edff;color:#1e40af;border:1px solid #bfdbfe}
+
+/* bug #3: extra badge for partial/kosong di hasil */
+.res-badges{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:8px}
+.res-badges span{font-size:.78rem;padding:4px 10px;border-radius:999px;background:#eef2fb;color:#334155}
+.res-badges .b{background:#dcfce7;color:#166534}
+.res-badges .p{background:#fef3c7;color:#92400e}
+.res-badges .s{background:#fee2e2;color:#991b1b}
+.res-badges .k{background:#f1f5f9;color:#475569}
 </style>
 </head>
 <body>
@@ -214,7 +221,7 @@ table tr:hover td{background:#f8faff}
         <label>Password</label>
         <input id="li-pass" type="password" placeholder="••••••" autocomplete="current-password">
       </div>
-      <button class="btn btn-primary btn-block" onclick="doLogin()">Masuk</button>
+      <button class="btn btn-primary btn-block" id="btn-login" onclick="doLogin()">Masuk</button>
       <p class="hint center mt">Belum punya akun? Klik tab <b>Daftar</b> di atas.</p>
     </div>
 
@@ -248,7 +255,7 @@ table tr:hover td{background:#f8faff}
         <label>Kode Guru <span style="font-weight:400;color:var(--muted)">(opsional)</span></label>
         <input id="rg-code" placeholder="kosongkan jika mendaftar sebagai siswa">
       </div>
-      <button class="btn btn-primary btn-block" onclick="doRegister()">Daftar Sekarang</button>
+      <button class="btn btn-primary btn-block" id="btn-reg" onclick="doRegister()">Daftar Sekarang</button>
     </div>
   </div>
 </div>
@@ -266,7 +273,7 @@ table tr:hover td{background:#f8faff}
     <ul class="rule">
       <li><b>Jumlah soal:</b> 30 butir (20 Pilihan Ganda, 5 Pilihan Ganda Kompleks, 5 Menjodohkan).</li>
       <li><b>Waktu:</b> 60 menit. Waktu berjalan otomatis saat ujian dimulai.</li>
-      <li><b>Soal diacak</b> dari bank soal yang besar.</li>
+      <li><b>Soal diacak</b> dari bank soal yang besar (Bab 3 &amp; Bab 4).</li>
       <li><b>Ujian mode layar penuh.</b> Keluar dari halaman ujian akan memicu <b>peringatan + alarm</b>.</li>
       <li>Pelanggaran <b>3 kali</b> akan membuat ujian <b>otomatis dikumpulkan</b>.</li>
       <li>Hasil ujian otomatis tersinkronisasi ke <b>database online</b> (jika diaktifkan guru).</li>
@@ -321,7 +328,7 @@ table tr:hover td{background:#f8faff}
   </div>
 
   <div class="card">
-    <h2>👥 Data Siswa & Hasil Ujian</h2>
+    <h2>👥 Data Siswa &amp; Hasil Ujian</h2>
     <div class="filter-bar">
       <select id="th-kelas" onchange="renderTeacherDash()">
         <option value="">Semua Kelas</option>
@@ -385,7 +392,7 @@ table tr:hover td{background:#f8faff}
     </div>
 
     <div class="divider"></div>
-    <button class="btn btn-gold btn-block" onclick="confirmSubmit()">✅ Kumpulkan Jawaban</button>
+    <button class="btn btn-gold btn-block" id="btn-submit" onclick="confirmSubmit()">✅ Kumpulkan Jawaban</button>
   </div>
 </div>
 
@@ -401,7 +408,9 @@ table tr:hover td{background:#f8faff}
     <div class="score-ring" id="ring"><b id="res-score">0</b><span>dari 100</span></div>
     <div class="strip" style="margin-top:20px">
       <div class="box"><b id="res-benar">0</b><span>Benar</span></div>
+      <div class="box"><b id="res-part">0</b><span>Sebagian</span></div>
       <div class="box"><b id="res-salah">0</b><span>Salah</span></div>
+      <div class="box"><b id="res-kosong">0</b><span>Kosong</span></div>
       <div class="box"><b id="res-waktu">0</b><span>Menit</span></div>
       <div class="box"><b id="res-viol">0</b><span>Pelanggaran</span></div>
     </div>
@@ -441,7 +450,7 @@ table tr:hover td{background:#f8faff}
     <p id="submit-msg">Pastikan semua soal telah dijawab.</p>
     <div class="btn-row" style="justify-content:center">
       <button class="btn btn-ghost" onclick="closeModal('ov-submit')">Periksa Lagi</button>
-      <button class="btn btn-primary" onclick="submitExam(false)">Ya, Kumpulkan</button>
+      <button class="btn btn-primary" id="btn-confirm-submit" onclick="submitExam(false)">Ya, Kumpulkan</button>
     </div>
   </div>
 </div>
@@ -517,7 +526,7 @@ table tr:hover td{background:#f8faff}
       <button class="btn btn-ghost" onclick="closeModal('ov-cloud')">Tutup</button>
       <button class="btn btn-danger" onclick="clearCloudConfig()">🗑️ Hapus Konfigurasi</button>
       <button class="btn btn-blue" onclick="testCloudConfig()">🔌 Uji Koneksi</button>
-      <button class="btn btn-primary" onclick="saveCloudConfig()">💾 Simpan & Aktifkan</button>
+      <button class="btn btn-primary" onclick="saveCloudConfig()">💾 Simpan &amp; Aktifkan</button>
     </div>
   </div>
 </div>
@@ -532,16 +541,16 @@ table tr:hover td{background:#f8faff}
 
 <script>
 /* ==========================================================
-   BANK SOAL
+   BANK SOAL — Bab 3 (Patuh Terhadap Norma) & Bab 4 (Keberagaman)
    ========================================================== */
 const BANK = [
-/* ---- BAB 3 ---- */
+/* ================= BAB 3 - PILIHAN GANDA ================= */
 {id:'3pg1',type:'pg',bab:3,q:'Manusia merupakan makhluk ciptaan Tuhan yang paling sempurna di antara makhluk lainnya karena ...',opts:['memiliki kekuatan fisik yang paling besar','diberi akal dan pikiran untuk berpikir dan memecahkan masalah','dapat hidup tanpa bantuan makhluk lain','memiliki umur yang paling panjang'],ans:1,exp:'Manusia dianugerahi akal dan pikiran sehingga mampu berpikir, berbicara, memecahkan masalah, serta memilah tindakan yang benar dan salah.'},
 {id:'3pg2',type:'pg',bab:3,q:'Ika selalu mengucapkan "tolong, maaf, dan terima kasih" kepada siapa pun. Kebiasaan tersebut merupakan penerapan norma ...',opts:['agama','kesusilaan','kesopanan','hukum'],ans:2,exp:'Norma kesopanan bersumber dari kebiasaan dan tata krama dalam pergaulan masyarakat.'},
 {id:'3pg3',type:'pg',bab:3,q:'Manusia tidak mampu memenuhi seluruh kebutuhannya sendiri sehingga memerlukan bantuan orang lain. Hal ini menunjukkan kedudukan manusia sebagai ...',opts:['makhluk individu','makhluk sosial','makhluk ekonomi','makhluk berakal'],ans:1,exp:'Sebagai makhluk sosial, manusia tidak dapat hidup sendiri.'},
 {id:'3pg4',type:'pg',bab:3,q:'Setiap manusia memiliki ciri khas, kebutuhan fisik, dan kebutuhan nonfisik yang berbeda dengan manusia lain. Pernyataan tersebut menunjukkan manusia sebagai ...',opts:['makhluk Tuhan Yang Maha Esa','makhluk individu','makhluk sosial','makhluk budaya'],ans:1,exp:'Sebagai makhluk individu, manusia memiliki ciri khas lahiriah dan rohaniah.'},
 {id:'3pg5',type:'pg',bab:3,q:'Norma adalah ...',opts:['hukuman yang diberikan kepada pelanggar aturan','aturan atau kaidah yang menjadi pedoman bertindak dalam kehidupan bermasyarakat','kebiasaan yang dilakukan masyarakat secara turun-temurun','peraturan yang hanya dibuat oleh pemerintah pusat'],ans:1,exp:'Norma adalah aturan atau kaidah yang menjadi petunjuk bagi manusia untuk bertindak benar dan tepat.'},
-{id:'3pg6',type:'pg',bab:3,q:'Berikut ini yang BUKAN merupakan syarat berlakunya norma dalam kehidupan masyarakat adalah ...',opts:['terdapat perintah yang harus dilaksanakan','adanya sanksi bagi pelanggar','bersifat mengikat dan memaksa untuk dipatuhi','harus selalu dibuat oleh lembaga negara'],ans:3,exp:'Tidak semua norma dibuat oleh lembaga negara.'},
+{id:'3pg6',type:'pg',bab:3,q:'Berikut ini yang BUKAN merupakan syarat berlakunya norma dalam kehidupan masyarakat adalah ...',opts:['terdapat perintah yang harus dilaksanakan','adanya sanksi bagi pelanggar','bersifat mengikat dan memaksa untuk dipatuhi','harus selalu dibuat oleh lembaga negara'],ans:3,exp:'Tidak semua norma dibuat oleh lembaga negara (mis. norma kesopanan).'},
 {id:'3pg7',type:'pg',bab:3,q:'Norma yang bersumber dari Tuhan Yang Maha Esa dan tertulis di dalam kitab suci adalah norma ...',opts:['agama','kesusilaan','kesopanan','hukum'],ans:0,exp:'Norma agama bersumber dari Tuhan Yang Maha Esa.'},
 {id:'3pg8',type:'pg',bab:3,q:'Sanksi bagi seseorang yang melanggar norma kesusilaan adalah ...',opts:['hukuman penjara','denda uang','rasa bersalah, malu, dan menyesal','dikucilkan oleh masyarakat'],ans:2,exp:'Pelanggar norma kesusilaan akan merasakan sanksi batin.'},
 {id:'3pg9',type:'pg',bab:3,q:'Norma yang bersumber dari hati nurani manusia sebagai pedoman hidup pribadi adalah norma ...',opts:['agama','kesusilaan','kesopanan','hukum'],ans:1,exp:'Norma kesusilaan bersumber dari suara hati nurani manusia.'},
@@ -554,17 +563,36 @@ const BANK = [
 {id:'3pg16',type:'pg',bab:3,q:'Contoh perilaku yang sesuai norma di lingkungan keluarga adalah ...',opts:['mengikuti kegiatan kerja bakti desa','membantu orang tua membersihkan rumah','memakai seragam sesuai jadwal sekolah','membayar pajak tepat waktu'],ans:1,exp:'Lingkungan keluarga merupakan pendidikan pertama.'},
 {id:'3pg17',type:'pg',bab:3,q:'Contoh perilaku yang sesuai norma di lingkungan masyarakat adalah ...',opts:['mengerjakan PR di rumah','ikut serta dalam kegiatan ronda malam','mematuhi rambu lalu lintas di jalan raya','menghormati guru di sekolah'],ans:1,exp:'Ronda malam, kerja bakti, dan menjaga kebersihan merupakan contoh norma di masyarakat.'},
 {id:'3pg18',type:'pg',bab:3,q:'Contoh perilaku yang sesuai norma di lingkungan bangsa dan negara adalah ...',opts:['membantu ibu mencuci piring','mengerjakan tugas kelompok di sekolah','membayar pajak sesuai aturan yang berlaku','mengikuti upacara bendera di sekolah'],ans:2,exp:'Di lingkungan bangsa dan negara berlaku norma hukum.'},
+/* ----- Tambahan Bab 3 PG (baru) ----- */
+{id:'3pg19',type:'pg',bab:3,q:'Interaksi sosial merupakan ...',opts:['hubungan timbal balik yang terjalin antara manusia dengan manusia lain','kemampuan manusia memenuhi kebutuhan sendiri','sifat bawaan yang dimiliki manusia sejak lahir','kegiatan yang dilakukan manusia untuk mencari keuntungan'],ans:0,exp:'Interaksi sosial adalah hubungan timbal balik antara individu dengan individu, individu dengan kelompok, atau kelompok dengan kelompok.'},
+{id:'3pg20',type:'pg',bab:3,q:'Kebutuhan yang harus dipenuhi setiap waktu seperti makan dan minum disebut kebutuhan ...',opts:['nonfisik','fisik','sekunder','tersier'],ans:1,exp:'Kebutuhan fisik adalah kebutuhan yang harus terpenuhi setiap waktu seperti makan dan minum.'},
+{id:'3pg21',type:'pg',bab:3,q:'Norma adat adalah ...',opts:['aturan hidup masyarakat daerah tertentu berdasarkan kebiasaan yang dilakukan dari dulu dan ditetapkan oleh ketua adat','peraturan tertulis yang dibuat oleh lembaga negara','aturan yang bersumber dari Tuhan Yang Maha Esa','aturan yang timbul dari pergaulan masyarakat sehari-hari'],ans:0,exp:'Norma adat bersumber dari tradisi dan kebiasaan kelompok masyarakat daerah tertentu.'},
+{id:'3pg22',type:'pg',bab:3,q:'Contoh norma adat yang masih berlaku di masyarakat Bali adalah ...',opts:['tidak adanya aktivitas masyarakat dan alat elektronik dimatikan selama Nyepi','membayar pajak tepat waktu','mengucapkan permisi saat lewat','memakai helm SNI saat berkendara'],ans:0,exp:'Saat Nyepi di Bali, seluruh aktivitas masyarakat dihentikan.'},
+{id:'3pg23',type:'pg',bab:3,q:'Norma hukum memiliki sanksi paling tegas karena ...',opts:['dibuat oleh lembaga resmi negara dan tertulis secara jelas','hanya berlaku di lingkungan tertentu','bersumber dari hati nurani','berlaku secara turun-temurun'],ans:0,exp:'Norma hukum dibuat oleh lembaga resmi negara dan sanksinya tertulis jelas.'},
+{id:'3pg24',type:'pg',bab:3,q:'Contoh perilaku sesuai norma di lingkungan keluarga adalah ...',opts:['mengikuti kerja bakti di desa','membantu orang tua mencuci piring','memakai seragam sesuai jadwal','membayar pajak tepat waktu'],ans:1,exp:'Membantu pekerjaan rumah merupakan contoh norma di keluarga.'},
+{id:'3pg25',type:'pg',bab:3,q:'Datang ke sekolah tepat waktu merupakan contoh penerapan norma di lingkungan ...',opts:['keluarga','sekolah','masyarakat','bangsa dan negara'],ans:1,exp:'Datang tepat waktu sesuai tata tertib sekolah.'},
+{id:'3pg26',type:'pg',bab:3,q:'Sanksi norma hukum di lingkungan sekolah dapat berupa ...',opts:['dosa','rasa malu','teguran lisan, panggilan orang tua, atau skorsing','dikucilkan masyarakat'],ans:2,exp:'Sanksi di sekolah bisa berupa teguran, panggilan orang tua, hingga skorsing.'},
+{id:'3pg27',type:'pg',bab:3,q:'Contoh perilaku sesuai norma di lingkungan bangsa dan negara adalah ...',opts:['membantu ibu memasak','mengumpulkan tugas tepat waktu','membayar pajak sesuai aturan','menghormati guru'],ans:2,exp:'Membayar pajak adalah kewajiban warga negara.'},
+{id:'3pg28',type:'pg',bab:3,q:'Seseorang yang terbiasa melanggar norma cenderung melakukannya secara sengaja karena ...',opts:['tidak tahu aturan','menganggap sanksi bukan hal yang membuat jera','tidak mampu membaca','tidak punya teman'],ans:1,exp:'Kebiasaan melanggar membuat seseorang menganggap sanksi biasa saja.'},
+{id:'3pg29',type:'pg',bab:3,q:'Contoh pelaksanaan norma kesusilaan adalah ...',opts:['beribadah tepat waktu','jujur dalam perkataan dan perbuatan','memakai helm SNI','mengantre dengan tertib'],ans:1,exp:'Norma kesusilaan bersumber dari hati nurani, contohnya jujur.'},
+{id:'3pg30',type:'pg',bab:3,q:'Berikut ini yang termasuk contoh perilaku tidak sesuai norma di sekolah adalah ...',opts:['mengumpulkan tugas tepat waktu','membuang sampah di kolong meja','memakai seragam sesuai jadwal','menghormati guru'],ans:1,exp:'Membuang sampah sembarangan melanggar tata tertib sekolah.'},
+
+/* ================= BAB 3 - PGK ================= */
 {id:'3pk1',type:'pgk',bab:3,q:'Pilihlah pernyataan yang termasuk syarat berlakunya norma dan aturan dalam kehidupan masyarakat!',opts:['Terdapat perintah yang harus dilaksanakan','Terdapat larangan yang harus ditinggalkan','Adanya sanksi bagi pelanggar','Bersifat mengikat dan memaksa untuk dipatuhi','Harus selalu dibuat oleh pemerintah pusat'],ans:[0,1,2,3],exp:'Syarat norma: perintah, larangan, sanksi, dan sifat mengikat.'},
 {id:'3pk2',type:'pgk',bab:3,q:'Pilihlah ciri-ciri yang dimiliki oleh norma hukum!',opts:['Dibuat oleh lembaga negara yang berwenang','Bersifat tertulis dan dibukukan','Sanksinya tegas serta memaksa','Bersumber dari hati nurani manusia','Sanksinya berupa dosa'],ans:[0,1,2],exp:'Norma hukum dibuat lembaga berwenang, tertulis, dan sanksinya tegas.'},
 {id:'3pk3',type:'pgk',bab:3,q:'Pilihlah contoh perilaku yang sesuai dengan norma yang berlaku di lingkungan sekolah!',opts:['Memakai seragam sesuai jadwal yang ditetapkan','Mengumpulkan tugas tepat waktu','Menghormati guru dan menyayangi teman','Menyontek jawaban teman saat ujian','Membuang sampah di kolong meja'],ans:[0,1,2],exp:'Menyontek dan membuang sampah sembarangan merupakan pelanggaran.'},
 {id:'3pk4',type:'pgk',bab:3,q:'Pilihlah faktor-faktor yang menyebabkan terjadinya pelanggaran norma!',opts:['Tidak memiliki kemampuan mengendalikan diri','Sudah terbiasa melakukan pelanggaran','Kurangnya sosialisasi norma secara terperinci','Rendahnya tingkat kesadaran terhadap norma','Tingginya rasa persatuan dan kesatuan bangsa'],ans:[0,1,2,3],exp:'Empat faktor pertama benar.'},
 {id:'3pk5',type:'pgk',bab:3,q:'Pilihlah contoh perilaku yang mencerminkan pelaksanaan norma agama!',opts:['Menjalankan ibadah sesuai agama dan kepercayaan masing-masing','Bersedekah kepada orang yang membutuhkan','Menjauhi larangan yang tertulis dalam kitab suci','Mengucapkan permisi saat melewati orang yang lebih tua','Memakai helm berstandar SNI saat berkendara'],ans:[0,1,2],exp:'Pilihan D = norma kesopanan, E = norma hukum.'},
+{id:'3pk6',type:'pgk',bab:3,q:'Pilihlah pernyataan yang benar tentang hubungan antarnorma!',opts:['Keempat norma saling melengkapi satu sama lain','Persamaan keempat norma adalah untuk menciptakan kehidupan aman dan tenteram','Perbedaan mendasar keempat norma terletak pada sumber aturan dan sanksi','Norma agama memiliki sanksi yang langsung dapat dirasakan di dunia','Norma hukum hanya berlaku di lingkungan tertentu'],ans:[0,1,2],exp:'Sanksi norma agama tidak bisa langsung dirasakan (dosa di akhirat).'},
+{id:'3pk7',type:'pgk',bab:3,q:'Pilihlah contoh perilaku sesuai norma di lingkungan masyarakat!',opts:['Mengucapkan salam saat berkunjung ke rumah orang lain','Berpartisipasi dalam kegiatan kerja bakti','Melestarikan tradisi dan kesenian lokal','Membuang sampah ke sungai','Membiarkan tetangga yang kesulitan'],ans:[0,1,2],exp:'Membuang sampah ke sungai dan membiarkan tetangga kesulitan adalah pelanggaran.'},
+
+/* ================= BAB 3 - MENJODOHKAN ================= */
 {id:'3m1',type:'match',bab:3,q:'Jodohkanlah jenis norma berikut dengan sumber aturannya yang tepat!',left:['Norma Agama','Norma Kesusilaan','Norma Kesopanan','Norma Hukum'],right:['Tuhan Yang Maha Esa melalui kitab suci','Hati nurani manusia','Kebiasaan dan tata krama dalam masyarakat','Peraturan perundang-undangan yang dibuat lembaga negara'],ans:[0,1,2,3],exp:'Setiap norma memiliki sumber yang berbeda.'},
 {id:'3m2',type:'match',bab:3,q:'Jodohkanlah jenis norma berikut dengan sanksi yang akan diterima pelanggarnya!',left:['Norma Agama','Norma Kesusilaan','Norma Kesopanan','Norma Hukum'],right:['Dosa','Rasa bersalah, malu, dan menyesal','Ditegur, dicemooh, atau dikucilkan masyarakat','Hukuman penjara, kurungan, atau denda'],ans:[0,1,2,3],exp:'Sanksi norma berbeda-beda sesuai sumbernya.'},
 {id:'3m3',type:'match',bab:3,q:'Jodohkanlah contoh perilaku berikut dengan jenis norma yang sesuai!',left:['Beribadah tepat waktu sesuai agamanya','Jujur mengembalikan uang kembalian yang berlebih','Mengucapkan permisi saat melewati orang yang lebih tua','Memakai helm SNI saat mengendarai sepeda motor'],right:['Norma Agama','Norma Kesusilaan','Norma Kesopanan','Norma Hukum'],ans:[0,1,2,3],exp:'Perhatikan sumber dan sifat masing-masing norma.'},
 {id:'3m4',type:'match',bab:3,q:'Jodohkanlah lingkungan berikut dengan contoh penerapan norma yang sesuai!',left:['Lingkungan Keluarga','Lingkungan Sekolah','Lingkungan Masyarakat','Lingkungan Bangsa dan Negara'],right:['Membantu orang tua membersihkan rumah','Memakai seragam sesuai jadwal yang ditetapkan','Ikut kerja bakti membersihkan lingkungan','Membayar pajak sesuai aturan pemerintah'],ans:[0,1,2,3],exp:'Setiap lingkungan memiliki bentuk norma yang berbeda.'},
 
-/* ---- BAB 4 ---- */
+/* ================= BAB 4 - PILIHAN GANDA ================= */
 {id:'4pg1',type:'pg',bab:4,q:'Arti semboyan Bhinneka Tunggal Ika adalah ...',opts:['persatuan dalam keberagaman','berbeda-beda tetapi tetap satu jua','satu untuk semua, semua untuk satu','bersatu kita teguh, bercerai kita runtuh'],ans:1,exp:'Bhinneka Tunggal Ika berarti "berbeda-beda tetapi tetap satu jua".'},
 {id:'4pg2',type:'pg',bab:4,q:'Semboyan Bhinneka Tunggal Ika terdapat pada lambang negara Garuda Pancasila, yaitu pada bagian ...',opts:['perisai di dada Garuda','pita yang dicengkeram kaki burung Garuda','sayap burung Garuda','kepala burung Garuda'],ans:1,exp:'Semboyan tertulis pada pita putih yang dicengkeram kaki Burung Garuda.'},
 {id:'4pg3',type:'pg',bab:4,q:'Berdasarkan sensus Badan Pusat Statistik tahun 2010, di Indonesia hidup lebih dari ... suku bangsa.',opts:['300','700','1.300','3.000'],ans:2,exp:'Sensus BPS 2010 mencatat lebih dari 1.300 suku bangsa.'},
@@ -590,16 +618,44 @@ const BANK = [
 {id:'4pg23',type:'pg',bab:4,q:'Suku Dayak tinggal di pulau ...',opts:['Sumatra','Sulawesi','Kalimantan','Papua'],ans:2,exp:'Suku Dayak di Pulau Kalimantan.'},
 {id:'4pg24',type:'pg',bab:4,q:'Sikap yang tepat dalam menghadapi perubahan sosial budaya di era global adalah ...',opts:['menolak seluruh budaya asing yang masuk','menerima semua budaya asing tanpa seleksi','menerima perubahan secara positif dan selektif sesuai nilai Pancasila','mengabaikan perkembangan zaman dan teknologi'],ans:2,exp:'Perubahan disikapi positif namun selektif.'},
 {id:'4pg25',type:'pg',bab:4,q:'Contoh perubahan sosial yang terjadi di tingkat global adalah ...',opts:['pergantian kepala daerah','revolusi digital dan perubahan iklim','pembangunan jalan di desa','perubahan kurikulum sekolah'],ans:1,exp:'Revolusi digital dan perubahan iklim adalah perubahan global.'},
+/* ----- Tambahan Bab 4 PG (baru) ----- */
+{id:'4pg26',type:'pg',bab:4,q:'Semboyan Bhinneka Tunggal Ika menjadi pedoman untuk ...',opts:['membangun persatuan dan kesatuan bangsa','memisahkan diri dari negara lain','menyeragamkan seluruh budaya','mengurangi keberagaman'],ans:0,exp:'Bhinneka Tunggal Ika menjadi pedoman membangun persatuan dan kesatuan.'},
+{id:'4pg27',type:'pg',bab:4,q:'Faktor perubahan sosial yang berkaitan dengan kemajuan teknologi informasi dan komunikasi disebut faktor ...',opts:['teknologi','demografi','ekonomi','politik'],ans:0,exp:'Faktor teknologi mempercepat perubahan sosial.'},
+{id:'4pg28',type:'pg',bab:4,q:'Perubahan jumlah penduduk, struktur usia, dan tingkat kelahiran merupakan faktor ...',opts:['demografi','lingkungan','budaya','konflik'],ans:0,exp:'Faktor demografi berkaitan dengan jumlah dan struktur penduduk.'},
+{id:'4pg29',type:'pg',bab:4,q:'Contoh perubahan sosial di tingkat global adalah ...',opts:['perubahan kurikulum sekolah','perubahan iklim dan revolusi digital','pergantian kepala daerah','kerja bakti di desa'],ans:1,exp:'Perubahan iklim dan revolusi digital merupakan perubahan tingkat global.'},
+{id:'4pg30',type:'pg',bab:4,q:'Contoh perubahan sosial di tingkat nasional adalah ...',opts:['perubahan kebijakan pemerintahan','perubahan gaya hidup satu keluarga','pembangunan jalan di RT','perubahan pola makan pribadi'],ans:0,exp:'Perubahan kebijakan pemerintahan adalah contoh perubahan tingkat nasional.'},
+{id:'4pg31',type:'pg',bab:4,q:'Sikap yang tepat dalam menerima perubahan sosial budaya adalah ...',opts:['menolak semua perubahan','menerima semua tanpa seleksi','menerima dengan positif dan selektif','mengabaikan perubahan'],ans:2,exp:'Terima perubahan secara positif dan selektif sesuai nilai Pancasila.'},
+{id:'4pg32',type:'pg',bab:4,q:'Suku Sunda merupakan suku terbesar kedua di Indonesia dengan populasi ...',opts:['3,58 persen','15,50 persen','40,22 persen','25 persen'],ans:1,exp:'Suku Sunda 15,50 persen, di bawah suku Jawa 40,22 persen.'},
+{id:'4pg33',type:'pg',bab:4,q:'Suku Batak menempati posisi ketiga suku terbesar di Indonesia dengan populasi ...',opts:['3,58 persen','15,50 persen','40,22 persen','5 persen'],ans:0,exp:'Suku Batak 3,58 persen.'},
+{id:'4pg34',type:'pg',bab:4,q:'Alat musik tradisional yang terbuat dari kayu adalah ...',opts:['angklung','kolintang','seruling','sulawesi'],ans:1,exp:'Kolintang dari kayu, angklung dan seruling dari bambu.'},
+{id:'4pg35',type:'pg',bab:4,q:'Perubahan dalam praktik agama dan kepercayaan dapat memengaruhi keberagaman dan perubahan sosial. Hal ini merupakan faktor ...',opts:['agama','politik','ekonomi','lingkungan'],ans:0,exp:'Faktor agama memengaruhi perubahan sosial.'},
+{id:'4pg36',type:'pg',bab:4,q:'Rumah adat suku Minangkabau dari Sumatra Barat adalah ...',opts:['Rumah Gadang','Bolon','Joglo','Bale Gede'],ans:0,exp:'Rumah adat Minangkabau adalah Rumah Gadang.'},
+{id:'4pg37',type:'pg',bab:4,q:'Tari kecak berasal dari daerah ...',opts:['Bali','Jawa Barat','Sumatra Utara','Papua'],ans:0,exp:'Tari Kecak dari Bali.'},
+{id:'4pg38',type:'pg',bab:4,q:'Suku Asmat berasal dari provinsi ...',opts:['Papua','Maluku','Nusa Tenggara Timur','Sulawesi'],ans:0,exp:'Suku Asmat dari Papua.'},
+{id:'4pg39',type:'pg',bab:4,q:'Semboyan Bhinneka Tunggal Ika diambil dari kitab ...',opts:['Sutasoma','Negarakertagama','Arjunawiwaha','Ramayana'],ans:0,exp:'Bhinneka Tunggal Ika diambil dari kitab Sutasoma karya Mpu Tantular.'},
+{id:'4pg40',type:'pg',bab:4,q:'Keberagaman di Indonesia harus dipandang sebagai ...',opts:['sumber perpecahan','kekayaan dan keunggulan bangsa','kelemahan bangsa','penghalang kemajuan'],ans:1,exp:'Keberagaman adalah kekayaan dan keunggulan bangsa Indonesia.'},
+{id:'4pg41',type:'pg',bab:4,q:'Faktor perubahan sosial yang berkaitan dengan arus informasi global dan hubungan internasional disebut faktor ...',opts:['globalisasi','migrasi','agama','budaya'],ans:0,exp:'Globalisasi memengaruhi perubahan sosial dan keberagaman.'},
+{id:'4pg42',type:'pg',bab:4,q:'Berikut ini adalah contoh perubahan sosial di tingkat lokal, kecuali ...',opts:['perubahan demografi lokal','perubahan infrastruktur lokal','perubahan kebijakan luar negeri','perubahan pola makan masyarakat lokal'],ans:2,exp:'Kebijakan luar negeri adalah perubahan tingkat nasional.'},
+
+/* ================= BAB 4 - PGK ================= */
 {id:'4pk1',type:'pgk',bab:4,q:'Pilihlah agama yang resmi diakui keberadaannya di Indonesia!',opts:['Islam','Kristen','Hindu','Shinto','Buddha'],ans:[0,1,2,4],exp:'Enam agama resmi: Islam, Kristen, Katolik, Hindu, Buddha, Khonghucu.'},
 {id:'4pk2',type:'pgk',bab:4,q:'Pilihlah faktor-faktor penyebab keberagaman masyarakat Indonesia!',opts:['Letak strategis wilayah Indonesia','Kondisi alam yang berbeda antardaerah','Kemajuan transportasi dan komunikasi','Penerimaan masyarakat atas perubahan','Keseragaman budaya di seluruh daerah'],ans:[0,1,2,3],exp:'Empat faktor pertama benar.'},
 {id:'4pk3',type:'pgk',bab:4,q:'Pilihlah contoh keberagaman antargolongan dalam masyarakat!',opts:['Perbedaan jenis pekerjaan','Perbedaan status sosial','Perbedaan tingkat pendidikan','Perbedaan partisipasi politik','Perbedaan warna kulit'],ans:[0,1,2,3],exp:'Warna kulit termasuk keberagaman ras.'},
 {id:'4pk4',type:'pgk',bab:4,q:'Pilihlah manfaat keberagaman bagi bangsa Indonesia!',opts:['Menambah kekayaan budaya bangsa','Menjadi alat pemersatu jika dikelola dengan baik','Meningkatkan kreativitas dan inovasi masyarakat','Mempermudah terjadinya perpecahan bangsa','Menghilangkan identitas daerah'],ans:[0,1,2],exp:'Keberagaman bermanfaat sebagai kekayaan dan pemersatu.'},
 {id:'4pk5',type:'pgk',bab:4,q:'Pilihlah contoh perubahan sosial yang terjadi di tingkat nasional!',opts:['Perubahan kebijakan pemerintahan','Reformasi sistem pendidikan','Perubahan kebijakan ekonomi negara','Perubahan gaya hidup satu keluarga','Pembangunan jalan di lingkungan RT'],ans:[0,1,2],exp:'Perubahan tingkat nasional mencakup kebijakan pemerintahan, ekonomi, pendidikan.'},
+{id:'4pk6',type:'pgk',bab:4,q:'Pilihlah faktor-faktor perubahan sosial menurut buku!',opts:['Faktor teknologi','Faktor demografi','Faktor ekonomi dan politik','Faktor lingkungan dan budaya','Faktor ketinggian gedung'],ans:[0,1,2,3],exp:'Faktor perubahan sosial: teknologi, demografi, ekonomi, politik, lingkungan, budaya, migrasi, globalisasi, konflik, agama.'},
+{id:'4pk7',type:'pgk',bab:4,q:'Pilihlah contoh karya budaya Indonesia yang diakui UNESCO!',opts:['Batik','Angklung','Noken','Pantun','Jaipong'],ans:[0,1,2,3],exp:'Batik, angklung, noken, pantun diakui UNESCO; jaipong belum.'},
+{id:'4pk8',type:'pgk',bab:4,q:'Pilihlah contoh perilaku menjaga persatuan dalam keberagaman!',opts:['Menghargai perbedaan pendapat','Berteman tanpa membedakan suku','Ikut kerja bakti bersama warga','Mengejek budaya daerah lain','Membeda-bedakan teman berdasarkan agama'],ans:[0,1,2],exp:'Mengejek budaya dan membeda-bedakan teman merusak persatuan.'},
+
+/* ================= BAB 4 - MENJODOHKAN ================= */
 {id:'4m1',type:'match',bab:4,q:'Jodohkanlah agama berikut dengan kitab sucinya yang tepat!',left:['Islam','Kristen','Hindu','Buddha','Khonghucu'],right:['Al-Qur\'an','Alkitab','Weda','Tripitaka','Si Shu'],ans:[0,1,2,3,4],exp:'Setiap agama memiliki kitab suci.'},
 {id:'4m2',type:'match',bab:4,q:'Jodohkanlah agama berikut dengan tempat ibadahnya yang tepat!',left:['Islam','Kristen','Hindu','Buddha','Khonghucu'],right:['Masjid','Gereja','Pura','Vihara/Wihara','Klenteng'],ans:[0,1,2,3,4],exp:'Tempat ibadah sesuai agama.'},
 {id:'4m3',type:'match',bab:4,q:'Jodohkanlah agama berikut dengan hari rayanya yang tepat!',left:['Islam','Kristen','Hindu','Buddha','Khonghucu'],right:['Idulfitri dan Iduladha','Natal','Nyepi','Waisak','Imlek'],ans:[0,1,2,3,4],exp:'Hari raya keagamaan di Indonesia.'},
 {id:'4m4',type:'match',bab:4,q:'Jodohkanlah suku bangsa berikut dengan asal daerahnya yang tepat!',left:['Suku Baduy','Suku Minangkabau','Suku Bugis','Suku Dayak','Suku Batak'],right:['Banten','Sumatra Barat','Sulawesi Selatan','Kalimantan','Sumatra Utara'],ans:[0,1,2,3,4],exp:'Indonesia memiliki lebih dari 1.300 suku bangsa.'},
 {id:'4m5',type:'match',bab:4,q:'Jodohkanlah daerah berikut dengan rumah adatnya yang tepat!',left:['Sumatra Utara','Sumatra Barat','Aceh','Bali','Jawa Timur'],right:['Bolon','Rumah Gadang','Rumoh Aceh','Bale Gede','Joglo'],ans:[0,1,2,3,4],exp:'Rumah adat merupakan kekayaan budaya daerah.'},
+{id:'4m6',type:'match',bab:4,q:'Jodohkanlah faktor perubahan sosial dengan contohnya!',left:['Faktor teknologi','Faktor demografi','Faktor migrasi','Faktor globalisasi','Faktor lingkungan'],right:['Kemajuan internet dan komunikasi','Perubahan jumlah penduduk','Perpindahan penduduk antar daerah','Arus informasi global','Perubahan iklim dan kondisi alam'],ans:[0,1,2,3,4],exp:'Setiap faktor memiliki contoh perubahan sosial masing-masing.'},
+{id:'4m7',type:'match',bab:4,q:'Jodohkanlah suku berikut dengan rumah adatnya!',left:['Suku Baduy','Suku Minangkabau','Suku Batak','Suku Jawa','Suku Bali'],right:['Rumah bambu dan kayu','Rumah Gadang','Rumah Bolon','Joglo','Bale Gede'],ans:[0,1,2,3,4],exp:'Rumah adat menunjukkan kekhasan daerah.'},
+];
 
 /* ==========================================================
    KONFIGURASI
@@ -628,17 +684,20 @@ const Cloud = {
   enabled: false,
   db: null,
   config: null,
-  status: 'offline', // offline | online | syncing | error
+  status: 'offline',
   lastSync: null,
-  listeners: [],
+  _initializing: false,
 
   init(){
-    const cfg = DB.get(KEY_CLOUD, null);
-    if(!cfg || !cfg.apiKey || !cfg.databaseURL){
-      this.setStatus('offline');
-      return false;
-    }
+    // bug fix: guard agar tidak dobel init
+    if(this._initializing) return this.enabled;
+    this._initializing = true;
     try{
+      const cfg = DB.get(KEY_CLOUD, null);
+      if(!cfg || !cfg.apiKey || !cfg.databaseURL){
+        this.setStatus('offline');
+        return false;
+      }
       if(typeof firebase === 'undefined'){
         this.setStatus('error', 'Firebase SDK tidak termuat (periksa koneksi internet).');
         return false;
@@ -662,6 +721,8 @@ const Cloud = {
       this.setStatus('error', 'Gagal inisialisasi Firebase: ' + (e.message || e));
       this.enabled = false;
       return false;
+    }finally{
+      this._initializing = false;
     }
   },
 
@@ -691,35 +752,32 @@ const Cloud = {
     }
   },
 
-  /* Simpan 1 user ke cloud */
   async pushUser(username, data){
-    if(!this.enabled || !this.db) return;
+    if(!this.enabled || !this.db) return false;
     try{
       this.setStatus('syncing', 'mengunggah data user...');
       await this.db.ref('users/' + username).set({
         nama: data.nama, kelas: data.kelas, absen: data.absen,
         role: data.role, dibuat: data.dibuat,
-        pass: data.pass // hash, bukan plain
+        pass: data.pass
       });
       this.lastSync = new Date();
       this.setStatus('online');
+      return true;
     }catch(e){
       console.warn('pushUser', e);
       this.setStatus('error', 'Gagal unggah user: ' + (e.message||e));
+      return false;
     }
   },
 
-  /* Hapus user dari cloud */
   async removeUser(username){
     if(!this.enabled || !this.db) return;
-    try{
-      await this.db.ref('users/' + username).remove();
-    }catch(e){}
+    try{ await this.db.ref('users/' + username).remove(); }catch(e){}
   },
 
-  /* Simpan hasil ujian ke cloud */
   async pushResult(username, result){
-    if(!this.enabled || !this.db) return;
+    if(!this.enabled || !this.db) return false;
     try{
       this.setStatus('syncing', 'mengunggah hasil ujian...');
       const key = 'r' + Date.now() + '_' + Math.random().toString(36).slice(2,7);
@@ -734,23 +792,16 @@ const Cloud = {
     }
   },
 
-  /* Hapus semua hasil ujian dari cloud */
   async clearAllResults(){
     if(!this.enabled || !this.db) return;
-    try{
-      await this.db.ref('results').remove();
-    }catch(e){}
+    try{ await this.db.ref('results').remove(); }catch(e){}
   },
 
-  /* Hapus hasil 1 user dari cloud */
   async clearUserResults(username){
     if(!this.enabled || !this.db) return;
-    try{
-      await this.db.ref('results/' + username).remove();
-    }catch(e){}
+    try{ await this.db.ref('results/' + username).remove(); }catch(e){}
   },
 
-  /* Ambil seluruh data dari cloud */
   async fetchAll(){
     if(!this.enabled || !this.db) return null;
     try{
@@ -766,57 +817,29 @@ const Cloud = {
     }
   },
 
-  /* Test koneksi ke Firebase */
-  async test(){
-    if(!this.db) return false;
-    try{
-      await this.db.ref('.info/connected').once('value');
-      return true;
-    }catch(e){
-      return false;
-    }
-  },
-
-  /* Dengarkan perubahan user secara realtime */
-  listenUsers(cb){
-    if(!this.enabled || !this.db) return;
-    this.db.ref('users').on('value', snap => {
-      cb(snap.val() || {});
-    }, err => console.warn('listenUsers', err));
-  },
-
-  /* Dengarkan perubahan hasil secara realtime */
-  listenResults(cb){
-    if(!this.enabled || !this.db) return;
-    this.db.ref('results').on('value', snap => {
-      cb(snap.val() || {});
-    }, err => console.warn('listenResults', err));
-  },
-
-  /* Gabungkan data cloud + local ke localStorage (untuk guru) */
+  /* bug fix: merge cloud → local, prioritaskan password lokal agar tidak ter-overwrite */
   async syncIntoLocal(){
     const cloud = await this.fetchAll();
     if(!cloud) return false;
     const localUsers = DB.get(KEY_USERS, {});
     const localRes = DB.get(KEY_RES, {});
 
-    // Gabungkan users
     const cloudUsers = cloud.users || {};
     Object.keys(cloudUsers).forEach(u=>{
-      const cu = cloudUsers[u];
+      const cu = cloudUsers[u] || {};
       if(!localUsers[u]){
         localUsers[u] = cu;
       } else {
-        // prioritaskan cloud untuk data profil, kecuali guru default
-        if(u === 'guru'){
-          // jangan timpa password guru lokal
-        } else {
-          localUsers[u] = Object.assign({}, localUsers[u], cu);
-        }
+        const lu = localUsers[u];
+        // Jangan timpa password lokal dengan cloud; prioritaskan lokal jika berbeda
+        const merged = Object.assign({}, cu, lu);
+        if(lu.pass) merged.pass = lu.pass;
+        // jika lokal belum ada pass, pakai cloud
+        if(!merged.pass && cu.pass) merged.pass = cu.pass;
+        localUsers[u] = merged;
       }
     });
 
-    // Gabungkan results
     const cloudRes = cloud.results || {};
     Object.keys(cloudRes).forEach(u=>{
       if(!localRes[u]) localRes[u] = [];
@@ -832,6 +855,24 @@ const Cloud = {
     DB.set(KEY_USERS, localUsers);
     DB.set(KEY_RES, localRes);
     return true;
+  },
+
+  async test(){
+    if(!this.db) return false;
+    try{
+      await this.db.ref('.info/connected').once('value');
+      return true;
+    }catch(e){ return false; }
+  },
+
+  listenUsers(cb){
+    if(!this.enabled || !this.db) return;
+    this.db.ref('users').on('value', snap => { cb(snap.val() || {}); }, err => console.warn('listenUsers', err));
+  },
+
+  listenResults(cb){
+    if(!this.enabled || !this.db) return;
+    this.db.ref('results').on('value', snap => { cb(snap.val() || {}); }, err => console.warn('listenResults', err));
   }
 };
 
@@ -843,6 +884,7 @@ function go(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.rem
 function toast(msg,ms){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('on'); clearTimeout(t._tm); t._tm=setTimeout(()=>t.classList.remove('on'),ms||2400); }
 function openModal(id){ document.getElementById(id).classList.add('on'); }
 function closeModal(id){ document.getElementById(id).classList.remove('on'); }
+function escapeHtml(s){ return String(s==null?'':s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
 /* ==========================================================
    SEED ADMIN
@@ -882,8 +924,7 @@ async function doRegister(){
   if(pass.length<4) return toast('Password minimal 4 karakter.');
   if(!/^[a-z0-9_.]+$/.test(user)) return toast('Username hanya huruf kecil, angka, titik, dan garis bawah.');
 
-  // Cek bentrok di cloud juga
-  if(Cloud.enabled){
+  if(Cloud.enabled && Cloud.db){
     try{
       const snap = await Cloud.db.ref('users/' + user).once('value');
       if(snap.exists()){
@@ -904,10 +945,7 @@ async function doRegister(){
   users[user] = data;
   DB.set(KEY_USERS, users);
 
-  // Push ke cloud
-  if(Cloud.enabled){
-    await Cloud.pushUser(user, data);
-  }
+  if(Cloud.enabled) await Cloud.pushUser(user, data);
 
   toast(role==='guru' ? 'Akun Guru berhasil dibuat!' : 'Registrasi berhasil! Silakan masuk.');
   switchTab('login');
@@ -919,36 +957,41 @@ async function doLogin(){
   const user=document.getElementById('li-user').value.trim().toLowerCase();
   const pass=document.getElementById('li-pass').value;
   if(!user||!pass) return toast('Isi username dan password!');
-  const users = DB.get(KEY_USERS, {});
+  const btn = document.getElementById('btn-login');
+  if(btn) btn.disabled = true;
+  try{
+    const users = DB.get(KEY_USERS, {});
 
-  // Jika user belum ada di lokal, coba ambil dari cloud
-  if(!users[user] && Cloud.enabled){
-    try{
-      const snap = await Cloud.db.ref('users/' + user).once('value');
-      if(snap.exists()){
-        users[user] = snap.val();
-        DB.set(KEY_USERS, users);
-      }
-    }catch(e){}
-  }
+    if(!users[user] && Cloud.enabled && Cloud.db){
+      try{
+        const snap = await Cloud.db.ref('users/' + user).once('value');
+        if(snap.exists()){
+          users[user] = snap.val();
+          DB.set(KEY_USERS, users);
+        }
+      }catch(e){}
+    }
 
-  if(!users[user]) return toast('Username tidak ditemukan. Silakan daftar dulu.');
-  if(users[user].pass !== hashPwd(pass)) return toast('Password salah.');
-  DB.set(KEY_SESS, user);
+    if(!users[user]) return toast('Username tidak ditemukan. Silakan daftar dulu.');
+    if(users[user].pass !== hashPwd(pass)) return toast('Password salah.');
+    DB.set(KEY_SESS, user);
 
-  // Sinkron data di background
-  if(Cloud.enabled){
-    Cloud.syncIntoLocal().catch(()=>{});
-  }
+    if(Cloud.enabled){
+      // fire and forget
+      Cloud.syncIntoLocal().catch(()=>{});
+    }
 
-  if(users[user].role === 'guru'){
-    renderTeacherDash();
-    go('scr-teacher');
-    toast('Selamat datang, ' + users[user].nama + '!');
-  } else {
-    loadDash();
-    go('scr-dash');
-    toast('Selamat datang, ' + users[user].nama.split(' ')[0] + '!');
+    if(users[user].role === 'guru'){
+      await renderTeacherDash(true);
+      go('scr-teacher');
+      toast('Selamat datang, ' + users[user].nama + '!');
+    } else {
+      loadDash();
+      go('scr-dash');
+      toast('Selamat datang, ' + users[user].nama.split(' ')[0] + '!');
+    }
+  } finally {
+    if(btn) btn.disabled = false;
   }
 }
 
@@ -993,7 +1036,7 @@ function showHistory(){
       <div class="hist">
         <div>
           <div style="font-weight:600">Asesmen Sumatif Tengah Semester</div>
-          <small>${r.tanggal} · ${r.benar} benar · ${r.waktu} menit · pelanggaran ${r.pelanggaran}</small>
+          <small>${escapeHtml(r.tanggal)} · ${r.benar} benar · ${r.waktu} menit · pelanggaran ${r.pelanggaran}</small>
         </div>
         <div class="sc ${r.skor<70?'low':''}">${r.skor}</div>
       </div>`).join('');
@@ -1004,14 +1047,15 @@ function showHistory(){
 
 /* ==========================================================
    DASHBOARD GURU
+   bug fix: tambahkan parameter skipCloud agar tidak sync
+   berulang saat filter diubah
    ========================================================== */
-async function renderTeacherDash(){
+async function renderTeacherDash(skipCloud){
   const me = currentUser();
   if(!me || me.role!=='guru') return go('scr-auth');
   document.getElementById('th-hi').textContent = 'Halo, ' + me.nama + '! 👋';
 
-  // Sinkron dari cloud jika online
-  if(Cloud.enabled){
+  if(!skipCloud && Cloud.enabled){
     await Cloud.syncIntoLocal().catch(()=>{});
   }
 
@@ -1060,13 +1104,13 @@ async function renderTeacherDash(){
       const lastSc = s.last===null ? '-' : s.last;
       return `<tr>
         <td>${i+1}</td>
-        <td><b>${escapeHtml(s.nama)}</b><br><small style="color:var(--muted)">@${s.username}</small></td>
-        <td>${s.kelas}</td>
-        <td>${s.absen}</td>
+        <td><b>${escapeHtml(s.nama)}</b><br><small style="color:var(--muted)">@${escapeHtml(s.username)}</small></td>
+        <td>${escapeHtml(s.kelas)}</td>
+        <td>${escapeHtml(s.absen)}</td>
         <td>${s.results.length}</td>
         <td>${sc}</td>
         <td>${lastSc}</td>
-        <td><button class="action-btn" onclick="viewStudent('${s.username}')">Lihat Detail</button></td>
+        <td><button class="action-btn" onclick="viewStudent('${escapeHtml(s.username)}')">Lihat Detail</button></td>
       </tr>`;
     }).join('');
     wrap.innerHTML = `
@@ -1099,7 +1143,7 @@ async function renderTeacherDash(){
     const c = perKelas[k];
     const rataK = c.nilai.length ? Math.round(c.nilai.reduce((a,b)=>a+b,0)/c.nilai.length) : 0;
     return `<tr>
-      <td><b>${k}</b></td>
+      <td><b>${escapeHtml(k)}</b></td>
       <td>${c.jumlah}</td>
       <td>${c.sudah}</td>
       <td>${c.jumlah - c.sudah}</td>
@@ -1108,8 +1152,6 @@ async function renderTeacherDash(){
     </tr>`;
   }).join('');
 }
-
-function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
 function viewStudent(username){
   const users = DB.get(KEY_USERS, {});
@@ -1133,7 +1175,7 @@ function viewStudent(username){
     const rows = results.slice().reverse().map((r,i)=>`
       <tr>
         <td>${i+1}</td>
-        <td>${r.tanggal}</td>
+        <td>${escapeHtml(r.tanggal)}</td>
         <td><b>${r.skor}</b></td>
         <td>${r.benar}</td>
         <td>${r.waktu} menit</td>
@@ -1155,8 +1197,8 @@ function viewStudent(username){
 
   const actions = `
     <div class="btn-row" style="margin-top:18px">
-      <button class="btn btn-ghost btn-sm" onclick="resetStudentPassword('${username}')">🔑 Reset Password</button>
-      <button class="btn btn-danger btn-sm" onclick="confirmDeleteStudent('${username}')">🗑️ Hapus Akun Siswa</button>
+      <button class="btn btn-ghost btn-sm" onclick="resetStudentPassword('${escapeHtml(username)}')">🔑 Reset Password</button>
+      <button class="btn btn-danger btn-sm" onclick="confirmDeleteStudent('${escapeHtml(username)}')">🗑️ Hapus Akun Siswa</button>
     </div>
   `;
 
@@ -1196,7 +1238,7 @@ function confirmDeleteStudent(username){
       closeModal('ov-detail');
       closeModal('ov-confirm');
       toast('Akun siswa berhasil dihapus.');
-      renderTeacherDash();
+      renderTeacherDash(true);
     }
   });
 }
@@ -1212,7 +1254,7 @@ function confirmResetAll(){
       if(Cloud.enabled) await Cloud.clearAllResults();
       closeModal('ov-confirm');
       toast('Semua riwayat nilai berhasil direset.');
-      renderTeacherDash();
+      renderTeacherDash(true);
     }
   });
 }
@@ -1223,7 +1265,11 @@ function showConfirm({icon, title, msg, okText, onOk}){
   document.getElementById('cf-msg').textContent = msg || '';
   const ok = document.getElementById('cf-ok');
   ok.textContent = okText || 'Ya, Lanjutkan';
-  ok.onclick = onOk;
+  ok.disabled = false;
+  ok.onclick = async ()=>{
+    ok.disabled = true;
+    try{ await onOk(); } finally { ok.disabled = false; }
+  };
   openModal('ov-confirm');
 }
 
@@ -1259,7 +1305,7 @@ function exportCSV(){
    CLOUD SETTINGS
    ========================================================== */
 function openCloudSettings(){
-  const cfg = DB.get(KEY_CLOUD, {});
+  const cfg = DB.get(KEY_CLOUD, {}) || {};
   document.getElementById('cfg-apiKey').value = cfg.apiKey || '';
   document.getElementById('cfg-dbUrl').value = cfg.databaseURL || '';
   document.getElementById('cfg-projectId').value = cfg.projectId || '';
@@ -1291,7 +1337,6 @@ async function testCloudConfig(){
   }
   showCfgStatus('info', '⏳ Menguji koneksi ke Firebase...');
   try{
-    // Inisialisasi sementara
     if(firebase.apps && firebase.apps.length){
       try{ firebase.app().delete(); }catch(e){}
     }
@@ -1316,28 +1361,25 @@ async function saveCloudConfig(){
   }
   DB.set(KEY_CLOUD, cfg);
 
-  // Re-init
   Cloud.enabled = false;
   Cloud.db = null;
   const ok = Cloud.init();
   if(ok){
     showCfgStatus('ok', '✅ Konfigurasi disimpan. Cloud aktif!');
-    // Sinkron data lokal ke cloud (backup) dan sebaliknya
     const users = DB.get(KEY_USERS, {});
     const results = DB.get(KEY_RES, {});
-    for(const u of Object.keys(users)){
-      await Cloud.pushUser(u, users[u]);
-    }
-    for(const u of Object.keys(results)){
-      for(const r of results[u]){
-        await Cloud.pushResult(u, r);
-      }
-    }
-    await Cloud.syncIntoLocal();
+    // batched parallel
+    const tasks = [];
+    Object.keys(users).forEach(u => tasks.push(Cloud.pushUser(u, users[u])));
+    Object.keys(results).forEach(u => {
+      results[u].forEach(r => tasks.push(Cloud.pushResult(u, r)));
+    });
+    try{ await Promise.all(tasks); }catch(e){}
+    await Cloud.syncIntoLocal().catch(()=>{});
     toast('Cloud aktif & data tersinkronisasi!', 3500);
     setTimeout(()=>{
       closeModal('ov-cloud');
-      renderTeacherDash();
+      renderTeacherDash(true);
     }, 1200);
   } else {
     showCfgStatus('err', '❌ Gagal mengaktifkan Firebase. Periksa kredensial.');
@@ -1359,7 +1401,7 @@ function clearCloudConfig(){
       closeModal('ov-cloud');
       Cloud.setStatus('offline');
       toast('Konfigurasi cloud dihapus.');
-      renderTeacherDash();
+      renderTeacherDash(true);
     }
   });
 }
@@ -1372,7 +1414,7 @@ async function syncFromCloud(manual){
   const ok = await Cloud.syncIntoLocal();
   if(ok){
     if(manual) toast('✅ Data terbaru berhasil diambil dari cloud.');
-    renderTeacherDash();
+    renderTeacherDash(true);
   } else {
     if(manual) toast('⚠️ Gagal mengambil data dari cloud.');
   }
@@ -1468,7 +1510,7 @@ function startTimer(){
 }
 function updateTimerUI(){
   const el = document.getElementById('ex-timer');
-  if(!examState) return;
+  if(!examState || !el) return;
   const m = Math.floor(examState.sisa/60), s = examState.sisa % 60;
   el.textContent = String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
   el.classList.toggle('warn', examState.sisa <= 300);
@@ -1478,6 +1520,7 @@ function updateTimerUI(){
    RENDER SOAL
    ========================================================== */
 function renderQ(){
+  if(!examState) return;
   const i = examState.current;
   const q = examState.questions[i];
   document.getElementById('q-num').textContent = i+1;
@@ -1501,7 +1544,8 @@ function renderQ(){
       const lbl = document.createElement('label');
       lbl.className = 'opt' + (selected ? ' sel' : '');
       lbl.innerHTML = `<input type="${isMulti?'checkbox':'radio'}" value="${oi}" ${selected?'checked':''}>
-        <span class="ltr">${'ABCDE'[oi]}</span><span>${opt}</span>`;
+        <span class="ltr">${'ABCDE'[oi]}</span><span></span>`;
+      lbl.querySelector('span:last-child').textContent = opt;
       const inp = lbl.querySelector('input');
       inp.addEventListener('change', ()=>{
         if(isMulti){
@@ -1515,6 +1559,7 @@ function renderQ(){
         }
         if(isMulti) lbl.classList.toggle('sel', inp.checked);
         updateProgress();
+        renderNavGrid();
       });
       wrap.appendChild(lbl);
     });
@@ -1534,11 +1579,12 @@ function renderQ(){
       row.className = 'match-row' + (cur[li]>=0?' filled':'');
       const sel = document.createElement('select');
       sel.innerHTML = '<option value="-1">— Pilih pasangan —</option>' +
-        q.right.map((r,ri)=>`<option value="${ri}" ${cur[li]===ri?'selected':''}>${r}</option>`).join('');
+        q.right.map((r,ri)=>`<option value="${ri}" ${cur[li]===ri?'selected':''}>${escapeHtml(r)}</option>`).join('');
       sel.addEventListener('change', ()=>{
         examState.answers[i][li] = parseInt(sel.value,10);
         row.classList.toggle('filled', parseInt(sel.value,10) >= 0);
         updateProgress();
+        renderNavGrid();
       });
       const leftDiv = document.createElement('div');
       leftDiv.className = 'match-left';
@@ -1561,6 +1607,7 @@ function renderQ(){
 }
 
 function updateProgress(){
+  if(!examState) return 0;
   let done = 0;
   examState.questions.forEach((q,i)=>{
     const a = examState.answers[i];
@@ -1568,12 +1615,15 @@ function updateProgress(){
     else if(q.type==='pgk'){ if(Array.isArray(a) && a.length) done++; }
     else { if(Array.isArray(a) && a.every(v=>v>=0)) done++; }
   });
-  document.getElementById('ex-progress').textContent = 'Terjawab ' + done + ' dari ' + examState.questions.length;
+  const el = document.getElementById('ex-progress');
+  if(el) el.textContent = 'Terjawab ' + done + ' dari ' + examState.questions.length;
   return done;
 }
 
 function renderNavGrid(){
+  if(!examState) return;
   const g = document.getElementById('nav-grid');
+  if(!g) return;
   g.innerHTML = '';
   examState.questions.forEach((q,i)=>{
     const a = examState.answers[i];
@@ -1591,6 +1641,7 @@ function renderNavGrid(){
 }
 function toggleNav(){ document.getElementById('nav-panel').classList.toggle('hidden'); }
 function navQ(d){
+  if(!examState) return;
   const n = examState.current + d;
   if(n<0 || n>=examState.questions.length) return;
   examState.current = n;
@@ -1667,7 +1718,7 @@ function blockCtx(e){ if(examState && examState.active) e.preventDefault(); }
 function blockCopy(e){ if(examState && examState.active) e.preventDefault(); }
 function blockKeys(e){
   if(!examState || !examState.active) return;
-  const k = e.key.toLowerCase();
+  const k = (e.key || '').toLowerCase();
   if(e.key==='F12'){ e.preventDefault(); return; }
   if((e.ctrlKey||e.metaKey) && ['c','v','x','p','s','u','a','f'].includes(k)){ e.preventDefault(); return; }
   if((e.ctrlKey||e.metaKey) && e.shiftKey && ['i','j','c'].includes(k)){ e.preventDefault(); }
@@ -1679,11 +1730,14 @@ function onBeforeUnload(e){ if(examState && examState.active){ e.preventDefault(
    SUBMIT & PENILAIAN
    ========================================================== */
 function confirmSubmit(){
+  if(!examState || !examState.active) return;
   const done = updateProgress();
   const total = examState.questions.length;
   document.getElementById('submit-msg').innerHTML = done < total
     ? `Masih ada <b>${total-done}</b> soal yang belum dijawab lengkap. Yakin ingin mengumpulkan sekarang?`
     : 'Semua soal telah dijawab. Yakin ingin mengumpulkan jawaban?';
+  const btn = document.getElementById('btn-confirm-submit');
+  if(btn) btn.disabled = false;
   openModal('ov-submit');
 }
 
@@ -1694,15 +1748,18 @@ async function submitExam(auto){
   disableAntiCheat();
   closeModal('ov-submit');
   closeModal('ov-viol');
+  const btn = document.getElementById('btn-confirm-submit');
+  if(btn) btn.disabled = true;
   try{ if(document.fullscreenElement) document.exitFullscreen(); }catch(e){}
 
   const waktuPakai = Math.max(1, Math.round((Date.now() - examState.mulai)/60000));
   const hasil = gradeExam();
 
+  const benar = hasil.review.filter(r=>r.status==='benar').length;
   const resultData = {
     tanggal: new Date().toLocaleString('id-ID',{dateStyle:'medium',timeStyle:'short'}),
     skor: hasil.score,
-    benar: hasil.review.filter(r=>r.status==='benar').length,
+    benar: benar,
     waktu: waktuPakai,
     pelanggaran: examState.violations
   };
@@ -1715,7 +1772,6 @@ async function submitExam(auto){
     all[me.user].push(resultData);
     DB.set(KEY_RES, all);
 
-    // Push ke cloud
     if(Cloud.enabled){
       cloudSaved = await Cloud.pushResult(me.user, resultData);
     }
@@ -1736,22 +1792,24 @@ function gradeExam(){
       qMax = CFG.poinPG;
       if(ans!==undefined && ans!==null){
         if(ans === q.correctIdx){ got = qMax; status='benar'; } else status='salah';
-      }
+      } else status = 'kosong';
     } else if(q.type==='pgk'){
       qMax = CFG.poinPGK;
       if(Array.isArray(ans) && ans.length){
         const a = ans.slice().sort().join(',');
         const b = q.correctSet.slice().sort().join(',');
         if(a === b){ got = qMax; status='benar'; } else status='salah';
-      }
+      } else status = 'kosong';
     } else {
       qMax = CFG.poinMatch;
       if(Array.isArray(ans) && ans.some(v=>v>=0)){
         let c = 0;
         ans.forEach((v,k)=>{ if(v === q.correctPos[k]) c++; });
         got = (c / q.correctPos.length) * qMax;
-        status = (c === q.correctPos.length) ? 'benar' : (c > 0 ? 'sebagian' : 'salah');
-      }
+        if(c === q.correctPos.length) status = 'benar';
+        else if(c > 0) status = 'sebagian';
+        else status = 'salah';
+      } else status = 'kosong';
     }
     earned += got; max += qMax;
     review.push({ q, ans, got, qMax, status });
@@ -1764,7 +1822,7 @@ function predikat(s){
   if(s>=90) return '🌟 Luar biasa! Pemahamanmu sangat baik.';
   if(s>=80) return '👍 Baik sekali! Pertahankan dan tingkatkan.';
   if(s>=70) return '🙂 Cukup baik. Pelajari kembali materi yang masih salah.';
-  if(s>=60) return '📚 Perlu belajar lagi. Bacalah kembali Bab 3, 4, dan 5.';
+  if(s>=60) return '📚 Perlu belajar lagi. Bacalah kembali Bab 3 dan Bab 4.';
   return '💪 Ayo semangat! Pelajari ulang materi dari awal dengan tekun.';
 }
 
@@ -1774,14 +1832,21 @@ function renderResult(h, waktu, auto, cloudSaved){
     (me ? me.nama + ' · Kelas ' + me.kelas : '') + (auto ? ' · (Dikumpulkan otomatis)' : '');
   document.getElementById('res-score').textContent = h.score;
   document.getElementById('ring').style.setProperty('--pct', h.score + '%');
+
+  // bug fix: hitung status dengan benar termasuk sebagian & kosong
   const benar = h.review.filter(r=>r.status==='benar').length;
+  const sebagian = h.review.filter(r=>r.status==='sebagian').length;
+  const kosong = h.review.filter(r=>r.status==='kosong').length;
+  const salah = h.review.filter(r=>r.status==='salah').length;
+
   document.getElementById('res-benar').textContent = benar;
-  document.getElementById('res-salah').textContent = h.review.length - benar;
+  document.getElementById('res-part').textContent = sebagian;
+  document.getElementById('res-salah').textContent = salah;
+  document.getElementById('res-kosong').textContent = kosong;
   document.getElementById('res-waktu').textContent = waktu;
-  document.getElementById('res-viol').textContent = examState.violations;
+  document.getElementById('res-viol').textContent = examState ? examState.violations : 0;
   document.getElementById('res-predikat').textContent = predikat(h.score);
 
-  // Info sync
   const syncEl = document.getElementById('res-sync');
   if(Cloud.enabled && cloudSaved){
     syncEl.textContent = '☁️ Nilai berhasil disinkronisasi ke database online.';
@@ -1797,8 +1862,8 @@ function renderResult(h, waktu, auto, cloudSaved){
   const list = document.getElementById('review-list');
   list.innerHTML = h.review.map((r,i)=>{
     const q = r.q;
-    const cls = r.status==='benar' ? 'ok' : (r.status==='sebagian' ? 'part' : 'no');
-    const icon = r.status==='benar' ? '✅' : (r.status==='sebagian' ? '🟡' : '❌');
+    const cls = r.status==='benar' ? 'ok' : r.status==='sebagian' ? 'part' : (r.status==='kosong' ? 'empty' : 'no');
+    const icon = r.status==='benar' ? '✅' : (r.status==='sebagian' ? '🟡' : (r.status==='kosong' ? '⚪' : '❌'));
     let jawabUser='', jawabBenar='';
     if(q.type==='pg'){
       jawabUser = (r.ans!==undefined && r.ans!==null) ? q.opts[r.ans] : '(tidak dijawab)';
@@ -1813,13 +1878,14 @@ function renderResult(h, waktu, auto, cloudSaved){
       }).join('<br>');
       jawabBenar = q.left.map((l,k)=> l + ' → ' + q.right[q.correctPos[k]]).join('<br>');
     }
+    const showJawabBenar = r.status !== 'benar';
     return `<div class="review-item ${cls}">
-      <div class="rv-q">${icon} Soal ${i+1}. ${q.q}</div>
+      <div class="rv-q">${icon} Soal ${i+1}. ${escapeHtml(q.q)}</div>
       <div class="rv-a">
-        <div><b>Jawabanmu:</b> ${r.status==='benar' ? jawabUser : '<i>'+jawabUser+'</i>'}</div>
-        ${r.status!=='benar' ? '<div style="margin-top:5px"><b>Jawaban benar:</b> '+jawabBenar+'</div>' : ''}
+        <div><b>Jawabanmu:</b> ${r.status==='benar' ? escapeHtml(jawabUser) : '<i>'+escapeHtml(jawabUser)+'</i>'}</div>
+        ${showJawabBenar ? '<div style="margin-top:5px"><b>Jawaban benar:</b> '+escapeHtml(jawabBenar)+'</div>' : ''}
       </div>
-      ${q.exp ? '<div class="exp">💡 '+q.exp+'</div>' : ''}
+      ${q.exp ? '<div class="exp">💡 '+escapeHtml(q.exp)+'</div>' : ''}
     </div>`;
   }).join('');
 }
@@ -1830,27 +1896,22 @@ function renderResult(h, waktu, auto, cloudSaved){
 (function init(){
   seedAdmin();
 
-  // Init Cloud
   Cloud.init();
   Cloud.setStatus(Cloud.status);
 
-  // Dengarkan perubahan realtime (jika cloud aktif)
-  if(Cloud.enabled){
-    Cloud.listenUsers(()=>{ /* bisa update UI otomatis */ });
-  }
-
   const me = currentUser();
   if(me){
-    if(me.role === 'guru'){ renderTeacherDash(); go('scr-teacher'); }
+    if(me.role === 'guru'){ renderTeacherDash(true).then(()=>go('scr-teacher')); }
     else { loadDash(); go('scr-dash'); }
   } else {
     go('scr-auth');
   }
 
-  document.getElementById('li-pass').addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
-  document.getElementById('rg-pass').addEventListener('keydown', e=>{ if(e.key==='Enter') doRegister(); });
+  const liPass = document.getElementById('li-pass');
+  if(liPass) liPass.addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
+  const rgPass = document.getElementById('rg-pass');
+  if(rgPass) rgPass.addEventListener('keydown', e=>{ if(e.key==='Enter') doRegister(); });
 
-  // Update status cloud tiap 30 detik
   setInterval(()=>{
     if(Cloud.enabled && Cloud.status !== 'syncing'){
       Cloud.setStatus('online');
