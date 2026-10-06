@@ -68,6 +68,10 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:linear
 @keyframes pulse{50%{opacity:.55}}
 .progress-mini{font-size:.84rem;color:var(--muted)}
 
+.prog-track{position:relative;height:8px;background:#e8eefb;border-radius:999px;overflow:hidden;margin-top:8px;width:100%}
+.prog-fill{position:absolute;top:0;left:0;bottom:0;width:0;background:linear-gradient(90deg,#f59e0b,#c1121f);border-radius:999px;transition:width .45s cubic-bezier(.2,.9,.35,1);box-shadow:0 0 8px rgba(193,18,31,.4)}
+.prog-fill.hi{background:linear-gradient(90deg,#34d399,#12805c);box-shadow:0 0 10px rgba(18,128,92,.5)}
+
 .q-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
 .q-num{width:34px;height:34px;border-radius:10px;background:var(--merah);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem;flex:none}
 .tag{font-size:.7rem;font-weight:700;letter-spacing:.4px;padding:4px 10px;border-radius:999px;text-transform:uppercase}
@@ -77,10 +81,15 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:linear
 .tag.bab{background:#f1f5f9;color:#475569}
 .q-text{font-size:1rem;line-height:1.6;margin-bottom:16px;white-space:pre-wrap}
 
+.flag-btn{background:#fff8e1;border:1.5px solid #fcd34d;color:#b45309;padding:5px 12px;border-radius:999px;font-size:.78rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s;margin-left:auto}
+.flag-btn.on{background:linear-gradient(135deg,#f59e0b,#b45309);color:#fff;border-color:#b45309;box-shadow:0 3px 10px rgba(180,83,9,.3)}
+.flag-btn:hover{transform:translateY(-1px)}
+
 .opts{display:flex;flex-direction:column;gap:10px}
 .opt{display:flex;align-items:flex-start;gap:11px;padding:13px 15px;border:1.8px solid #e3e9f3;border-radius:12px;cursor:pointer;background:#fbfcfe;transition:.16s}
 .opt:hover{border-color:#c7d4ea;background:#f4f7fd}
-.opt.sel{border-color:var(--merah);background:#fff2f3;box-shadow:0 0 0 3px rgba(193,18,31,.08)}
+.opt.sel{border-color:var(--merah);background:#fff2f3;box-shadow:0 0 0 3px rgba(193,18,31,.08);animation:optPulse .35s ease}
+@keyframes optPulse{0%{transform:scale(1)}50%{transform:scale(1.025)}100%{transform:scale(1)}}
 .opt input{margin-top:3px;width:17px;height:17px;accent-color:var(--merah);flex:none;cursor:pointer}
 .opt .ltr{width:24px;height:24px;border-radius:7px;background:#e8eefb;color:var(--biru);display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:700;flex:none}
 .opt.sel .ltr{background:var(--merah);color:#fff}
@@ -94,16 +103,20 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:linear
 @media(max-width:600px){.match-row{grid-template-columns:1fr}}
 
 .navgrid{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
-.navgrid button{width:40px;height:40px;border-radius:10px;border:1.6px solid #dbe3f0;background:#fff;font-weight:600;font-size:.85rem;cursor:pointer;color:#475569;font-family:inherit;transition:.15s}
+.navgrid button{width:40px;height:40px;border-radius:10px;border:1.6px solid #dbe3f0;background:#fff;font-weight:600;font-size:.85rem;cursor:pointer;color:#475569;font-family:inherit;transition:.15s;position:relative}
 .navgrid button:hover{border-color:var(--merah);color:var(--merah)}
 .navgrid button.done{background:#dcfce7;border-color:#86efac;color:#166534}
-.navgrid button.now{background:var(--merah);border-color:var(--merah);color:#fff;transform:scale(1.06)}
+.navgrid button.flag{background:#fef3c7;border-color:#fcd34d;color:#b45309}
+.navgrid button.flag:after{content:"🚩";position:absolute;top:-6px;right:-6px;font-size:.7rem}
+.navgrid button.now{background:var(--merah);border-color:var(--merah);color:#fff;transform:scale(1.08);box-shadow:0 4px 12px rgba(193,18,31,.35)}
 
 .score-ring{width:170px;height:170px;border-radius:50%;margin:0 auto;display:flex;flex-direction:column;align-items:center;justify-content:center;background:conic-gradient(var(--merah) var(--pct),#eef2fb 0);position:relative}
 .score-ring:before{content:"";position:absolute;inset:12px;background:#fff;border-radius:50%}
-.score-ring b{position:relative;font-size:2.6rem;color:var(--merah);line-height:1}
+.score-ring b{position:relative;font-size:2.6rem;color:var(--merah);line-height:1;animation:scorePop .7s ease}
+@keyframes scorePop{0%{transform:scale(0);opacity:0}60%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
 .score-ring span{position:relative;font-size:.78rem;color:var(--muted);margin-top:4px}
-.review-item{border-left:5px solid #e5e7eb;padding:12px 16px;margin-bottom:12px;border-radius:0 12px 12px 0;background:#fafbfd}
+
+.review-item{border-left:5px solid #e5e7eb;padding:12px 16px;margin-bottom:12px;border-radius:0 12px 12px 0;background:#fafbfd;animation:fade .4s ease}
 .review-item.ok{border-color:var(--hijau);background:#f3fbf7}
 .review-item.no{border-color:var(--merah);background:#fef4f4}
 .review-item.part{border-color:var(--kuning);background:#fffbeb}
@@ -162,11 +175,7 @@ table tr:hover td{background:#f8faff}
 .detail-row b{color:#334155}
 .detail-table{margin-top:14px}
 
-.cloud-bar{
-  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
-  background:#f7f9fd;border:1px solid #e6ecf7;border-radius:12px;
-  padding:10px 14px;margin-bottom:14px;font-size:.85rem;
-}
+.cloud-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:#f7f9fd;border:1px solid #e6ecf7;border-radius:12px;padding:10px 14px;margin-bottom:14px;font-size:.85rem}
 .cloud-dot{width:10px;height:10px;border-radius:50%;background:#94a3b8;flex:none}
 .cloud-dot.online{background:#22c55e;box-shadow:0 0 0 4px rgba(34,197,94,.18);animation:pulseDot 1.8s infinite}
 .cloud-dot.syncing{background:#f59e0b;box-shadow:0 0 0 4px rgba(245,158,11,.18);animation:pulseDot 1s infinite}
@@ -185,13 +194,39 @@ table tr:hover td{background:#f8faff}
 .cfg-status.err{background:#fee2e2;color:#991b1b;border:1px solid #fecaca}
 .cfg-status.info{background:#e0edff;color:#1e40af;border:1px solid #bfdbfe}
 
-/* bug #3: extra badge for partial/kosong di hasil */
-.res-badges{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:8px}
-.res-badges span{font-size:.78rem;padding:4px 10px;border-radius:999px;background:#eef2fb;color:#334155}
-.res-badges .b{background:#dcfce7;color:#166534}
-.res-badges .p{background:#fef3c7;color:#92400e}
-.res-badges .s{background:#fee2e2;color:#991b1b}
-.res-badges .k{background:#f1f5f9;color:#475569}
+.xp-bar{display:flex;align-items:center;gap:12px;margin-top:14px;background:linear-gradient(135deg,#f5f3ff,#ede9fe);border:1px solid #ddd6fe;border-radius:14px;padding:12px 16px}
+.xp-ic{font-size:1.8rem;flex:none}
+.xp-info{flex:1;min-width:0}
+.xp-info .lv{font-weight:800;font-size:.92rem;color:#6d28d9}
+.xp-track{height:12px;background:#fff;border-radius:999px;overflow:hidden;position:relative;border:1px solid #ddd6fe;margin-top:5px}
+.xp-fill{position:absolute;inset:0;width:0;background:linear-gradient(90deg,#a78bfa,#6d28d9);border-radius:999px;transition:width .8s cubic-bezier(.2,.9,.35,1)}
+.xp-txt{font-size:.72rem;color:#6d28d9;margin-top:4px;font-weight:600}
+
+.lb-row{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:12px;background:#fbfcfe;border:1px solid #e8edf7;margin-bottom:8px;transition:.2s;animation:fade .4s ease backwards}
+.lb-row:hover{transform:translateX(3px);border-color:#c7d4ea}
+.lb-row.me{background:linear-gradient(90deg,#fff7ed,#fef3c7);border-color:#fcd34d;box-shadow:0 4px 14px rgba(251,191,36,.25)}
+.lb-rank{width:34px;height:34px;border-radius:10px;background:#eef2fb;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.88rem;color:var(--biru);flex:none}
+.lb-rank.g1{background:linear-gradient(135deg,#fbbf24,#b45309);color:#fff;box-shadow:0 3px 8px rgba(180,83,9,.4)}
+.lb-rank.g2{background:linear-gradient(135deg,#cbd5e1,#64748b);color:#fff}
+.lb-rank.g3{background:linear-gradient(135deg,#fb923c,#9a3412);color:#fff}
+.lb-name{flex:1;font-weight:600;font-size:.9rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lb-sc{font-weight:800;color:var(--hijau);font-size:1.1rem}
+
+.badge-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-top:12px}
+.badge-item{background:#f8fafc;border:2px solid #e2e8f0;border-radius:14px;padding:14px 10px;text-align:center;transition:.2s;opacity:.5}
+.badge-item .b-ic{font-size:2rem;display:block;line-height:1;filter:grayscale(1)}
+.badge-item .b-nm{font-weight:700;font-size:.82rem;margin-top:8px;color:#334155}
+.badge-item .b-ds{font-size:.7rem;color:var(--muted);margin-top:3px;line-height:1.3}
+.badge-item.earned{opacity:1;border-color:#fbbf24;background:linear-gradient(140deg,#fffbeb,#fef3c7);box-shadow:0 6px 18px rgba(251,191,36,.3);animation:badgePop .6s cubic-bezier(.34,1.56,.64,1) backwards}
+.badge-item.earned .b-ic{filter:none}
+@keyframes badgePop{from{transform:scale(.3) rotate(-15deg);opacity:0}to{transform:none;opacity:1}}
+
+#confetti-canvas{position:fixed;inset:0;pointer-events:none;z-index:250;display:none}
+
+.moti{position:fixed;top:18px;left:50%;transform:translateX(-50%) translateY(-120px);background:linear-gradient(135deg,#7c3aed,#5b21b6);color:#fff;padding:12px 26px;border-radius:999px;font-weight:700;font-size:.9rem;z-index:290;transition:.45s cubic-bezier(.34,1.56,.64,1);box-shadow:0 12px 32px rgba(109,40,217,.4);opacity:0;pointer-events:none;max-width:90vw;text-align:center}
+.moti.on{transform:translateX(-50%) translateY(0);opacity:1}
+
+@media print{.btn,.btn-row,.hero,.exam-bar{display:none!important}.card{box-shadow:none;border:1px solid #ccc}}
 </style>
 </head>
 <body>
@@ -283,11 +318,27 @@ table tr:hover td{background:#f8faff}
       <div class="box"><b id="st-best">-</b><span>Nilai Terbaik</span></div>
       <div class="box"><b id="st-last">-</b><span>Nilai Terakhir</span></div>
     </div>
+
+    <div class="xp-bar">
+      <div class="xp-ic">⭐</div>
+      <div class="xp-info">
+        <div class="lv" id="xp-lv">Level 1 · Pemula</div>
+        <div class="xp-track"><div class="xp-fill" id="xp-fill"></div></div>
+        <div class="xp-txt" id="xp-txt">0 / 100 XP</div>
+      </div>
+    </div>
+
     <div class="btn-row">
       <button class="btn btn-primary" onclick="startExam()">🚀 Mulai Ujian Sekarang</button>
       <button class="btn btn-ghost" onclick="showHistory()">📊 Riwayat Nilai</button>
       <button class="btn btn-ghost" onclick="logout()">↩ Keluar</button>
     </div>
+  </div>
+
+  <div class="card">
+    <h2>🏆 Papan Peringkat Kelas</h2>
+    <p class="hint" style="margin-bottom:12px">10 nilai terbaik di kelasmu. Jadilah yang teratas!</p>
+    <div id="lb-list"><p class="hint">Memuat...</p></div>
   </div>
 
   <div class="card" id="hist-card" style="display:none">
@@ -330,12 +381,12 @@ table tr:hover td{background:#f8faff}
   <div class="card">
     <h2>👥 Data Siswa &amp; Hasil Ujian</h2>
     <div class="filter-bar">
-      <select id="th-kelas" onchange="renderTeacherDash()">
+      <select id="th-kelas" onchange="renderTeacherDash(true)">
         <option value="">Semua Kelas</option>
         <option value="VII A">VII A</option>
         <option value="VII B">VII B</option>
       </select>
-      <input id="th-search" placeholder="Cari nama / username..." oninput="renderTeacherDash()">
+      <input id="th-search" placeholder="Cari nama / username..." oninput="renderTeacherDash(true)">
       <button class="btn btn-blue btn-sm" onclick="exportCSV()">📥 Export CSV</button>
       <button class="btn btn-danger btn-sm" onclick="confirmResetAll()">🗑️ Reset Semua Nilai</button>
       <button class="btn btn-ghost btn-sm" onclick="logout()">↩ Keluar</button>
@@ -359,9 +410,10 @@ table tr:hover td{background:#f8faff}
 <!-- ================= EXAM ================= -->
 <div id="scr-exam" class="screen">
   <div class="exam-bar">
-    <div>
+    <div style="flex:1;min-width:200px">
       <div style="font-weight:700;font-size:.95rem">Asesmen Sumatif Tengah Semester</div>
       <div class="progress-mini" id="ex-progress">Terjawab 0 dari 30</div>
+      <div class="prog-track"><div class="prog-fill" id="ex-prog-fill"></div></div>
     </div>
     <div class="timer" id="ex-timer">60:00</div>
   </div>
@@ -371,7 +423,8 @@ table tr:hover td{background:#f8faff}
       <div class="q-num" id="q-num">1</div>
       <span class="tag pg" id="q-tag">Pilihan Ganda</span>
       <span class="tag bab" id="q-bab">Bab 3</span>
-      <span style="margin-left:auto;font-size:.8rem;color:var(--muted)" id="q-point">1 poin</span>
+      <button class="flag-btn" id="q-flag" onclick="toggleFlag()">🚩 Tandai</button>
+      <span style="font-size:.8rem;color:var(--muted)" id="q-point">1 poin</span>
     </div>
     <div class="q-text" id="q-text"></div>
     <div id="q-body"></div>
@@ -387,7 +440,7 @@ table tr:hover td{background:#f8faff}
 
     <div id="nav-panel" class="hidden">
       <div class="divider"></div>
-      <div class="hint" style="margin-bottom:8px">Klik nomor untuk berpindah soal. Hijau = sudah dijawab.</div>
+      <div class="hint" style="margin-bottom:8px">Klik nomor untuk berpindah soal. <span style="color:#166534">Hijau</span> = sudah dijawab. 🚩 = ditandai.</div>
       <div class="navgrid" id="nav-grid"></div>
     </div>
 
@@ -416,10 +469,17 @@ table tr:hover td{background:#f8faff}
     </div>
     <p class="hint mt" id="res-predikat"></p>
     <p class="hint" id="res-sync" style="color:var(--hijau);font-weight:600"></p>
+    <p class="hint mt" id="res-xp" style="color:#6d28d9;font-weight:700"></p>
     <div class="btn-row" style="justify-content:center">
       <button class="btn btn-primary" onclick="go('scr-dash')">🏠 Kembali ke Beranda</button>
       <button class="btn btn-ghost" onclick="window.print()">🖨️ Cetak Hasil</button>
     </div>
+  </div>
+
+  <div class="card">
+    <h2>🏆 Pencapaian</h2>
+    <p class="hint">Badge yang berhasil kamu raih dari ujian ini.</p>
+    <div class="badge-grid" id="badge-grid"></div>
   </div>
 
   <div class="card">
@@ -532,6 +592,8 @@ table tr:hover td{background:#f8faff}
 </div>
 
 <div class="toast" id="toast"></div>
+<canvas id="confetti-canvas"></canvas>
+<div class="moti" id="moti"></div>
 
 <!-- ==========================================================
      FIREBASE SDK
@@ -541,10 +603,9 @@ table tr:hover td{background:#f8faff}
 
 <script>
 /* ==========================================================
-   BANK SOAL — Bab 3 (Patuh Terhadap Norma) & Bab 4 (Keberagaman)
+   BANK SOAL (Bab 3 & Bab 4)
    ========================================================== */
 const BANK = [
-/* ================= BAB 3 - PILIHAN GANDA ================= */
 {id:'3pg1',type:'pg',bab:3,q:'Manusia merupakan makhluk ciptaan Tuhan yang paling sempurna di antara makhluk lainnya karena ...',opts:['memiliki kekuatan fisik yang paling besar','diberi akal dan pikiran untuk berpikir dan memecahkan masalah','dapat hidup tanpa bantuan makhluk lain','memiliki umur yang paling panjang'],ans:1,exp:'Manusia dianugerahi akal dan pikiran sehingga mampu berpikir, berbicara, memecahkan masalah, serta memilah tindakan yang benar dan salah.'},
 {id:'3pg2',type:'pg',bab:3,q:'Ika selalu mengucapkan "tolong, maaf, dan terima kasih" kepada siapa pun. Kebiasaan tersebut merupakan penerapan norma ...',opts:['agama','kesusilaan','kesopanan','hukum'],ans:2,exp:'Norma kesopanan bersumber dari kebiasaan dan tata krama dalam pergaulan masyarakat.'},
 {id:'3pg3',type:'pg',bab:3,q:'Manusia tidak mampu memenuhi seluruh kebutuhannya sendiri sehingga memerlukan bantuan orang lain. Hal ini menunjukkan kedudukan manusia sebagai ...',opts:['makhluk individu','makhluk sosial','makhluk ekonomi','makhluk berakal'],ans:1,exp:'Sebagai makhluk sosial, manusia tidak dapat hidup sendiri.'},
@@ -563,8 +624,7 @@ const BANK = [
 {id:'3pg16',type:'pg',bab:3,q:'Contoh perilaku yang sesuai norma di lingkungan keluarga adalah ...',opts:['mengikuti kegiatan kerja bakti desa','membantu orang tua membersihkan rumah','memakai seragam sesuai jadwal sekolah','membayar pajak tepat waktu'],ans:1,exp:'Lingkungan keluarga merupakan pendidikan pertama.'},
 {id:'3pg17',type:'pg',bab:3,q:'Contoh perilaku yang sesuai norma di lingkungan masyarakat adalah ...',opts:['mengerjakan PR di rumah','ikut serta dalam kegiatan ronda malam','mematuhi rambu lalu lintas di jalan raya','menghormati guru di sekolah'],ans:1,exp:'Ronda malam, kerja bakti, dan menjaga kebersihan merupakan contoh norma di masyarakat.'},
 {id:'3pg18',type:'pg',bab:3,q:'Contoh perilaku yang sesuai norma di lingkungan bangsa dan negara adalah ...',opts:['membantu ibu mencuci piring','mengerjakan tugas kelompok di sekolah','membayar pajak sesuai aturan yang berlaku','mengikuti upacara bendera di sekolah'],ans:2,exp:'Di lingkungan bangsa dan negara berlaku norma hukum.'},
-/* ----- Tambahan Bab 3 PG (baru) ----- */
-{id:'3pg19',type:'pg',bab:3,q:'Interaksi sosial merupakan ...',opts:['hubungan timbal balik yang terjalin antara manusia dengan manusia lain','kemampuan manusia memenuhi kebutuhan sendiri','sifat bawaan yang dimiliki manusia sejak lahir','kegiatan yang dilakukan manusia untuk mencari keuntungan'],ans:0,exp:'Interaksi sosial adalah hubungan timbal balik antara individu dengan individu, individu dengan kelompok, atau kelompok dengan kelompok.'},
+{id:'3pg19',type:'pg',bab:3,q:'Interaksi sosial merupakan ...',opts:['hubungan timbal balik yang terjalin antara manusia dengan manusia lain','kemampuan manusia memenuhi kebutuhan sendiri','sifat bawaan yang dimiliki manusia sejak lahir','kegiatan yang dilakukan manusia untuk mencari keuntungan'],ans:0,exp:'Interaksi sosial adalah hubungan timbal balik antar individu, individu dengan kelompok, atau kelompok dengan kelompok.'},
 {id:'3pg20',type:'pg',bab:3,q:'Kebutuhan yang harus dipenuhi setiap waktu seperti makan dan minum disebut kebutuhan ...',opts:['nonfisik','fisik','sekunder','tersier'],ans:1,exp:'Kebutuhan fisik adalah kebutuhan yang harus terpenuhi setiap waktu seperti makan dan minum.'},
 {id:'3pg21',type:'pg',bab:3,q:'Norma adat adalah ...',opts:['aturan hidup masyarakat daerah tertentu berdasarkan kebiasaan yang dilakukan dari dulu dan ditetapkan oleh ketua adat','peraturan tertulis yang dibuat oleh lembaga negara','aturan yang bersumber dari Tuhan Yang Maha Esa','aturan yang timbul dari pergaulan masyarakat sehari-hari'],ans:0,exp:'Norma adat bersumber dari tradisi dan kebiasaan kelompok masyarakat daerah tertentu.'},
 {id:'3pg22',type:'pg',bab:3,q:'Contoh norma adat yang masih berlaku di masyarakat Bali adalah ...',opts:['tidak adanya aktivitas masyarakat dan alat elektronik dimatikan selama Nyepi','membayar pajak tepat waktu','mengucapkan permisi saat lewat','memakai helm SNI saat berkendara'],ans:0,exp:'Saat Nyepi di Bali, seluruh aktivitas masyarakat dihentikan.'},
@@ -576,8 +636,6 @@ const BANK = [
 {id:'3pg28',type:'pg',bab:3,q:'Seseorang yang terbiasa melanggar norma cenderung melakukannya secara sengaja karena ...',opts:['tidak tahu aturan','menganggap sanksi bukan hal yang membuat jera','tidak mampu membaca','tidak punya teman'],ans:1,exp:'Kebiasaan melanggar membuat seseorang menganggap sanksi biasa saja.'},
 {id:'3pg29',type:'pg',bab:3,q:'Contoh pelaksanaan norma kesusilaan adalah ...',opts:['beribadah tepat waktu','jujur dalam perkataan dan perbuatan','memakai helm SNI','mengantre dengan tertib'],ans:1,exp:'Norma kesusilaan bersumber dari hati nurani, contohnya jujur.'},
 {id:'3pg30',type:'pg',bab:3,q:'Berikut ini yang termasuk contoh perilaku tidak sesuai norma di sekolah adalah ...',opts:['mengumpulkan tugas tepat waktu','membuang sampah di kolong meja','memakai seragam sesuai jadwal','menghormati guru'],ans:1,exp:'Membuang sampah sembarangan melanggar tata tertib sekolah.'},
-
-/* ================= BAB 3 - PGK ================= */
 {id:'3pk1',type:'pgk',bab:3,q:'Pilihlah pernyataan yang termasuk syarat berlakunya norma dan aturan dalam kehidupan masyarakat!',opts:['Terdapat perintah yang harus dilaksanakan','Terdapat larangan yang harus ditinggalkan','Adanya sanksi bagi pelanggar','Bersifat mengikat dan memaksa untuk dipatuhi','Harus selalu dibuat oleh pemerintah pusat'],ans:[0,1,2,3],exp:'Syarat norma: perintah, larangan, sanksi, dan sifat mengikat.'},
 {id:'3pk2',type:'pgk',bab:3,q:'Pilihlah ciri-ciri yang dimiliki oleh norma hukum!',opts:['Dibuat oleh lembaga negara yang berwenang','Bersifat tertulis dan dibukukan','Sanksinya tegas serta memaksa','Bersumber dari hati nurani manusia','Sanksinya berupa dosa'],ans:[0,1,2],exp:'Norma hukum dibuat lembaga berwenang, tertulis, dan sanksinya tegas.'},
 {id:'3pk3',type:'pgk',bab:3,q:'Pilihlah contoh perilaku yang sesuai dengan norma yang berlaku di lingkungan sekolah!',opts:['Memakai seragam sesuai jadwal yang ditetapkan','Mengumpulkan tugas tepat waktu','Menghormati guru dan menyayangi teman','Menyontek jawaban teman saat ujian','Membuang sampah di kolong meja'],ans:[0,1,2],exp:'Menyontek dan membuang sampah sembarangan merupakan pelanggaran.'},
@@ -585,14 +643,10 @@ const BANK = [
 {id:'3pk5',type:'pgk',bab:3,q:'Pilihlah contoh perilaku yang mencerminkan pelaksanaan norma agama!',opts:['Menjalankan ibadah sesuai agama dan kepercayaan masing-masing','Bersedekah kepada orang yang membutuhkan','Menjauhi larangan yang tertulis dalam kitab suci','Mengucapkan permisi saat melewati orang yang lebih tua','Memakai helm berstandar SNI saat berkendara'],ans:[0,1,2],exp:'Pilihan D = norma kesopanan, E = norma hukum.'},
 {id:'3pk6',type:'pgk',bab:3,q:'Pilihlah pernyataan yang benar tentang hubungan antarnorma!',opts:['Keempat norma saling melengkapi satu sama lain','Persamaan keempat norma adalah untuk menciptakan kehidupan aman dan tenteram','Perbedaan mendasar keempat norma terletak pada sumber aturan dan sanksi','Norma agama memiliki sanksi yang langsung dapat dirasakan di dunia','Norma hukum hanya berlaku di lingkungan tertentu'],ans:[0,1,2],exp:'Sanksi norma agama tidak bisa langsung dirasakan (dosa di akhirat).'},
 {id:'3pk7',type:'pgk',bab:3,q:'Pilihlah contoh perilaku sesuai norma di lingkungan masyarakat!',opts:['Mengucapkan salam saat berkunjung ke rumah orang lain','Berpartisipasi dalam kegiatan kerja bakti','Melestarikan tradisi dan kesenian lokal','Membuang sampah ke sungai','Membiarkan tetangga yang kesulitan'],ans:[0,1,2],exp:'Membuang sampah ke sungai dan membiarkan tetangga kesulitan adalah pelanggaran.'},
-
-/* ================= BAB 3 - MENJODOHKAN ================= */
 {id:'3m1',type:'match',bab:3,q:'Jodohkanlah jenis norma berikut dengan sumber aturannya yang tepat!',left:['Norma Agama','Norma Kesusilaan','Norma Kesopanan','Norma Hukum'],right:['Tuhan Yang Maha Esa melalui kitab suci','Hati nurani manusia','Kebiasaan dan tata krama dalam masyarakat','Peraturan perundang-undangan yang dibuat lembaga negara'],ans:[0,1,2,3],exp:'Setiap norma memiliki sumber yang berbeda.'},
 {id:'3m2',type:'match',bab:3,q:'Jodohkanlah jenis norma berikut dengan sanksi yang akan diterima pelanggarnya!',left:['Norma Agama','Norma Kesusilaan','Norma Kesopanan','Norma Hukum'],right:['Dosa','Rasa bersalah, malu, dan menyesal','Ditegur, dicemooh, atau dikucilkan masyarakat','Hukuman penjara, kurungan, atau denda'],ans:[0,1,2,3],exp:'Sanksi norma berbeda-beda sesuai sumbernya.'},
 {id:'3m3',type:'match',bab:3,q:'Jodohkanlah contoh perilaku berikut dengan jenis norma yang sesuai!',left:['Beribadah tepat waktu sesuai agamanya','Jujur mengembalikan uang kembalian yang berlebih','Mengucapkan permisi saat melewati orang yang lebih tua','Memakai helm SNI saat mengendarai sepeda motor'],right:['Norma Agama','Norma Kesusilaan','Norma Kesopanan','Norma Hukum'],ans:[0,1,2,3],exp:'Perhatikan sumber dan sifat masing-masing norma.'},
 {id:'3m4',type:'match',bab:3,q:'Jodohkanlah lingkungan berikut dengan contoh penerapan norma yang sesuai!',left:['Lingkungan Keluarga','Lingkungan Sekolah','Lingkungan Masyarakat','Lingkungan Bangsa dan Negara'],right:['Membantu orang tua membersihkan rumah','Memakai seragam sesuai jadwal yang ditetapkan','Ikut kerja bakti membersihkan lingkungan','Membayar pajak sesuai aturan pemerintah'],ans:[0,1,2,3],exp:'Setiap lingkungan memiliki bentuk norma yang berbeda.'},
-
-/* ================= BAB 4 - PILIHAN GANDA ================= */
 {id:'4pg1',type:'pg',bab:4,q:'Arti semboyan Bhinneka Tunggal Ika adalah ...',opts:['persatuan dalam keberagaman','berbeda-beda tetapi tetap satu jua','satu untuk semua, semua untuk satu','bersatu kita teguh, bercerai kita runtuh'],ans:1,exp:'Bhinneka Tunggal Ika berarti "berbeda-beda tetapi tetap satu jua".'},
 {id:'4pg2',type:'pg',bab:4,q:'Semboyan Bhinneka Tunggal Ika terdapat pada lambang negara Garuda Pancasila, yaitu pada bagian ...',opts:['perisai di dada Garuda','pita yang dicengkeram kaki burung Garuda','sayap burung Garuda','kepala burung Garuda'],ans:1,exp:'Semboyan tertulis pada pita putih yang dicengkeram kaki Burung Garuda.'},
 {id:'4pg3',type:'pg',bab:4,q:'Berdasarkan sensus Badan Pusat Statistik tahun 2010, di Indonesia hidup lebih dari ... suku bangsa.',opts:['300','700','1.300','3.000'],ans:2,exp:'Sensus BPS 2010 mencatat lebih dari 1.300 suku bangsa.'},
@@ -618,7 +672,6 @@ const BANK = [
 {id:'4pg23',type:'pg',bab:4,q:'Suku Dayak tinggal di pulau ...',opts:['Sumatra','Sulawesi','Kalimantan','Papua'],ans:2,exp:'Suku Dayak di Pulau Kalimantan.'},
 {id:'4pg24',type:'pg',bab:4,q:'Sikap yang tepat dalam menghadapi perubahan sosial budaya di era global adalah ...',opts:['menolak seluruh budaya asing yang masuk','menerima semua budaya asing tanpa seleksi','menerima perubahan secara positif dan selektif sesuai nilai Pancasila','mengabaikan perkembangan zaman dan teknologi'],ans:2,exp:'Perubahan disikapi positif namun selektif.'},
 {id:'4pg25',type:'pg',bab:4,q:'Contoh perubahan sosial yang terjadi di tingkat global adalah ...',opts:['pergantian kepala daerah','revolusi digital dan perubahan iklim','pembangunan jalan di desa','perubahan kurikulum sekolah'],ans:1,exp:'Revolusi digital dan perubahan iklim adalah perubahan global.'},
-/* ----- Tambahan Bab 4 PG (baru) ----- */
 {id:'4pg26',type:'pg',bab:4,q:'Semboyan Bhinneka Tunggal Ika menjadi pedoman untuk ...',opts:['membangun persatuan dan kesatuan bangsa','memisahkan diri dari negara lain','menyeragamkan seluruh budaya','mengurangi keberagaman'],ans:0,exp:'Bhinneka Tunggal Ika menjadi pedoman membangun persatuan dan kesatuan.'},
 {id:'4pg27',type:'pg',bab:4,q:'Faktor perubahan sosial yang berkaitan dengan kemajuan teknologi informasi dan komunikasi disebut faktor ...',opts:['teknologi','demografi','ekonomi','politik'],ans:0,exp:'Faktor teknologi mempercepat perubahan sosial.'},
 {id:'4pg28',type:'pg',bab:4,q:'Perubahan jumlah penduduk, struktur usia, dan tingkat kelahiran merupakan faktor ...',opts:['demografi','lingkungan','budaya','konflik'],ans:0,exp:'Faktor demografi berkaitan dengan jumlah dan struktur penduduk.'},
@@ -636,8 +689,6 @@ const BANK = [
 {id:'4pg40',type:'pg',bab:4,q:'Keberagaman di Indonesia harus dipandang sebagai ...',opts:['sumber perpecahan','kekayaan dan keunggulan bangsa','kelemahan bangsa','penghalang kemajuan'],ans:1,exp:'Keberagaman adalah kekayaan dan keunggulan bangsa Indonesia.'},
 {id:'4pg41',type:'pg',bab:4,q:'Faktor perubahan sosial yang berkaitan dengan arus informasi global dan hubungan internasional disebut faktor ...',opts:['globalisasi','migrasi','agama','budaya'],ans:0,exp:'Globalisasi memengaruhi perubahan sosial dan keberagaman.'},
 {id:'4pg42',type:'pg',bab:4,q:'Berikut ini adalah contoh perubahan sosial di tingkat lokal, kecuali ...',opts:['perubahan demografi lokal','perubahan infrastruktur lokal','perubahan kebijakan luar negeri','perubahan pola makan masyarakat lokal'],ans:2,exp:'Kebijakan luar negeri adalah perubahan tingkat nasional.'},
-
-/* ================= BAB 4 - PGK ================= */
 {id:'4pk1',type:'pgk',bab:4,q:'Pilihlah agama yang resmi diakui keberadaannya di Indonesia!',opts:['Islam','Kristen','Hindu','Shinto','Buddha'],ans:[0,1,2,4],exp:'Enam agama resmi: Islam, Kristen, Katolik, Hindu, Buddha, Khonghucu.'},
 {id:'4pk2',type:'pgk',bab:4,q:'Pilihlah faktor-faktor penyebab keberagaman masyarakat Indonesia!',opts:['Letak strategis wilayah Indonesia','Kondisi alam yang berbeda antardaerah','Kemajuan transportasi dan komunikasi','Penerimaan masyarakat atas perubahan','Keseragaman budaya di seluruh daerah'],ans:[0,1,2,3],exp:'Empat faktor pertama benar.'},
 {id:'4pk3',type:'pgk',bab:4,q:'Pilihlah contoh keberagaman antargolongan dalam masyarakat!',opts:['Perbedaan jenis pekerjaan','Perbedaan status sosial','Perbedaan tingkat pendidikan','Perbedaan partisipasi politik','Perbedaan warna kulit'],ans:[0,1,2,3],exp:'Warna kulit termasuk keberagaman ras.'},
@@ -646,15 +697,13 @@ const BANK = [
 {id:'4pk6',type:'pgk',bab:4,q:'Pilihlah faktor-faktor perubahan sosial menurut buku!',opts:['Faktor teknologi','Faktor demografi','Faktor ekonomi dan politik','Faktor lingkungan dan budaya','Faktor ketinggian gedung'],ans:[0,1,2,3],exp:'Faktor perubahan sosial: teknologi, demografi, ekonomi, politik, lingkungan, budaya, migrasi, globalisasi, konflik, agama.'},
 {id:'4pk7',type:'pgk',bab:4,q:'Pilihlah contoh karya budaya Indonesia yang diakui UNESCO!',opts:['Batik','Angklung','Noken','Pantun','Jaipong'],ans:[0,1,2,3],exp:'Batik, angklung, noken, pantun diakui UNESCO; jaipong belum.'},
 {id:'4pk8',type:'pgk',bab:4,q:'Pilihlah contoh perilaku menjaga persatuan dalam keberagaman!',opts:['Menghargai perbedaan pendapat','Berteman tanpa membedakan suku','Ikut kerja bakti bersama warga','Mengejek budaya daerah lain','Membeda-bedakan teman berdasarkan agama'],ans:[0,1,2],exp:'Mengejek budaya dan membeda-bedakan teman merusak persatuan.'},
-
-/* ================= BAB 4 - MENJODOHKAN ================= */
 {id:'4m1',type:'match',bab:4,q:'Jodohkanlah agama berikut dengan kitab sucinya yang tepat!',left:['Islam','Kristen','Hindu','Buddha','Khonghucu'],right:['Al-Qur\'an','Alkitab','Weda','Tripitaka','Si Shu'],ans:[0,1,2,3,4],exp:'Setiap agama memiliki kitab suci.'},
 {id:'4m2',type:'match',bab:4,q:'Jodohkanlah agama berikut dengan tempat ibadahnya yang tepat!',left:['Islam','Kristen','Hindu','Buddha','Khonghucu'],right:['Masjid','Gereja','Pura','Vihara/Wihara','Klenteng'],ans:[0,1,2,3,4],exp:'Tempat ibadah sesuai agama.'},
 {id:'4m3',type:'match',bab:4,q:'Jodohkanlah agama berikut dengan hari rayanya yang tepat!',left:['Islam','Kristen','Hindu','Buddha','Khonghucu'],right:['Idulfitri dan Iduladha','Natal','Nyepi','Waisak','Imlek'],ans:[0,1,2,3,4],exp:'Hari raya keagamaan di Indonesia.'},
 {id:'4m4',type:'match',bab:4,q:'Jodohkanlah suku bangsa berikut dengan asal daerahnya yang tepat!',left:['Suku Baduy','Suku Minangkabau','Suku Bugis','Suku Dayak','Suku Batak'],right:['Banten','Sumatra Barat','Sulawesi Selatan','Kalimantan','Sumatra Utara'],ans:[0,1,2,3,4],exp:'Indonesia memiliki lebih dari 1.300 suku bangsa.'},
 {id:'4m5',type:'match',bab:4,q:'Jodohkanlah daerah berikut dengan rumah adatnya yang tepat!',left:['Sumatra Utara','Sumatra Barat','Aceh','Bali','Jawa Timur'],right:['Bolon','Rumah Gadang','Rumoh Aceh','Bale Gede','Joglo'],ans:[0,1,2,3,4],exp:'Rumah adat merupakan kekayaan budaya daerah.'},
 {id:'4m6',type:'match',bab:4,q:'Jodohkanlah faktor perubahan sosial dengan contohnya!',left:['Faktor teknologi','Faktor demografi','Faktor migrasi','Faktor globalisasi','Faktor lingkungan'],right:['Kemajuan internet dan komunikasi','Perubahan jumlah penduduk','Perpindahan penduduk antar daerah','Arus informasi global','Perubahan iklim dan kondisi alam'],ans:[0,1,2,3,4],exp:'Setiap faktor memiliki contoh perubahan sosial masing-masing.'},
-{id:'4m7',type:'match',bab:4,q:'Jodohkanlah suku berikut dengan rumah adatnya!',left:['Suku Baduy','Suku Minangkabau','Suku Batak','Suku Jawa','Suku Bali'],right:['Rumah bambu dan kayu','Rumah Gadang','Rumah Bolon','Joglo','Bale Gede'],ans:[0,1,2,3,4],exp:'Rumah adat menunjukkan kekhasan daerah.'},
+{id:'4m7',type:'match',bab:4,q:'Jodohkanlah suku berikut dengan rumah adatnya!',left:['Suku Baduy','Suku Minangkabau','Suku Batak','Suku Jawa','Suku Bali'],right:['Rumah bambu dan kayu','Rumah Gadang','Rumah Bolon','Joglo','Bale Gede'],ans:[0,1,2,3,4],exp:'Rumah adat menunjukkan kekhasan daerah.'}
 ];
 
 /* ==========================================================
@@ -674,40 +723,84 @@ const DB = {
   get(k,d){ try{ const v=localStorage.getItem(k); return v===null?d:JSON.parse(v);}catch(e){return d;} },
   set(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
 };
-const KEY_USERS='ppkn_users_v4', KEY_SESS='ppkn_sess_v4', KEY_RES='ppkn_res_v4', KEY_CLOUD='ppkn_firebase_cfg_v1';
+const KEY_USERS='ppkn_users_v4', KEY_SESS='ppkn_sess_v4', KEY_RES='ppkn_res_v4',
+      KEY_CLOUD='ppkn_firebase_cfg_v1', KEY_XP='ppkn_xp_v1', KEY_BADGE='ppkn_badge_v1';
+
 function hashPwd(s){ let h=5381; for(let i=0;i<s.length;i++){ h=((h<<5)+h)^s.charCodeAt(i); h=h>>>0; } return 'h'+h.toString(16); }
 
 /* ==========================================================
-   CLOUD SYNC (FIREBASE REALTIME DATABASE)
+   XP & LEVEL
+   ========================================================== */
+const LEVELS = [
+  {min:0,   name:'Pemula'},
+  {min:100, name:'Pelajar'},
+  {min:250, name:'Rajin'},
+  {min:500, name:'Cerdas'},
+  {min:900, name:'Ahli'},
+  {min:1500,name:'Master'},
+  {min:2500,name:'Legenda'}
+];
+function getXPAll(){ return DB.get(KEY_XP, {}); }
+function getXPUser(u){ return getXPAll()[u] || 0; }
+function addXP(u, amount){
+  const xp = getXPAll();
+  xp[u] = (xp[u]||0) + Math.max(0, Math.round(amount));
+  DB.set(KEY_XP, xp);
+  return xp[u];
+}
+function levelInfo(xp){
+  let lvlIdx = 0;
+  for(let i=0;i<LEVELS.length;i++){ if(xp >= LEVELS[i].min) lvlIdx = i; }
+  const cur = LEVELS[lvlIdx];
+  const next = LEVELS[lvlIdx+1] || null;
+  const inLevel = xp - cur.min;
+  const span = next ? (next.min - cur.min) : 1;
+  return { lvl: lvlIdx+1, name: cur.name, inLevel, span,
+    pct: next ? Math.min(100, Math.round(inLevel/span*100)) : 100, next };
+}
+
+/* ==========================================================
+   BADGES
+   ========================================================== */
+const BADGES = [
+  {id:'perfect',   ic:'🎯', nm:'Sempurna',    ds:'Skor 100'},
+  {id:'excellent', ic:'🌟', nm:'Luar Biasa',  ds:'Skor ≥ 90'},
+  {id:'good',      ic:'👍', nm:'Baik',        ds:'Skor ≥ 80'},
+  {id:'pass',      ic:'✅', nm:'Lulus',       ds:'Skor ≥ 70'},
+  {id:'fast',      ic:'⚡', nm:'Kilat',       ds:'Selesai < 30 menit'},
+  {id:'honest',    ic:'🛡️', nm:'Jujur',       ds:'Tanpa pelanggaran'},
+  {id:'persistent',ic:'🔁', nm:'Gigih',       ds:'Ujian ≥ 3 kali'},
+  {id:'riser',     ic:'📈', nm:'Naik Daun',   ds:'Nilai naik ≥ 10 dari sebelumnya'}
+];
+function getBadgesAll(){ return DB.get(KEY_BADGE, {}); }
+function getBadgesUser(u){ return getBadgesAll()[u] || []; }
+function awardBadge(u, id){
+  const all = getBadgesAll();
+  if(!all[u]) all[u] = [];
+  if(!all[u].includes(id)){
+    all[u].push(id);
+    DB.set(KEY_BADGE, all);
+    return true;
+  }
+  return false;
+}
+
+/* ==========================================================
+   CLOUD (FIREBASE RTDB)
    ========================================================== */
 const Cloud = {
-  enabled: false,
-  db: null,
-  config: null,
-  status: 'offline',
-  lastSync: null,
-  _initializing: false,
+  enabled:false, db:null, config:null, status:'offline', lastSync:null, _initializing:false,
 
   init(){
-    // bug fix: guard agar tidak dobel init
     if(this._initializing) return this.enabled;
     this._initializing = true;
     try{
       const cfg = DB.get(KEY_CLOUD, null);
-      if(!cfg || !cfg.apiKey || !cfg.databaseURL){
-        this.setStatus('offline');
-        return false;
-      }
-      if(typeof firebase === 'undefined'){
-        this.setStatus('error', 'Firebase SDK tidak termuat (periksa koneksi internet).');
-        return false;
-      }
-      if(firebase.apps && firebase.apps.length){
-        try{ firebase.app().delete(); }catch(e){}
-      }
+      if(!cfg || !cfg.apiKey || !cfg.databaseURL){ this.setStatus('offline'); return false; }
+      if(typeof firebase === 'undefined'){ this.setStatus('error', 'Firebase SDK tidak termuat.'); return false; }
+      if(firebase.apps && firebase.apps.length){ try{ firebase.app().delete(); }catch(e){} }
       firebase.initializeApp({
-        apiKey: cfg.apiKey,
-        databaseURL: cfg.databaseURL,
+        apiKey: cfg.apiKey, databaseURL: cfg.databaseURL,
         projectId: cfg.projectId || undefined,
         authDomain: cfg.authDomain || undefined
       });
@@ -718,12 +811,10 @@ const Cloud = {
       return true;
     }catch(e){
       console.warn('Firebase init error', e);
-      this.setStatus('error', 'Gagal inisialisasi Firebase: ' + (e.message || e));
+      this.setStatus('error', 'Gagal init Firebase: ' + (e.message||e));
       this.enabled = false;
       return false;
-    }finally{
-      this._initializing = false;
-    }
+    }finally{ this._initializing = false; }
   },
 
   setStatus(s, info){
@@ -732,16 +823,16 @@ const Cloud = {
     const lbl = document.getElementById('cloud-label');
     const inf = document.getElementById('cloud-info');
     if(!dot || !lbl) return;
-    dot.className = 'cloud-dot ' + (s === 'offline' ? '' : s);
-    if(s === 'online'){
+    dot.className = 'cloud-dot ' + (s==='offline' ? '' : s);
+    if(s==='online'){
       lbl.textContent = '🟢 Cloud Online';
       lbl.style.color = '#166534';
       inf.textContent = this.lastSync ? '· Sinkron terakhir: ' + this.lastSync.toLocaleTimeString('id-ID') : '';
-    } else if(s === 'syncing'){
+    } else if(s==='syncing'){
       lbl.textContent = '🟡 Menyinkronkan...';
       lbl.style.color = '#b45309';
       inf.textContent = info || '';
-    } else if(s === 'error'){
+    } else if(s==='error'){
       lbl.textContent = '🔴 Cloud Error';
       lbl.style.color = '#991b1b';
       inf.textContent = info || '';
@@ -752,17 +843,15 @@ const Cloud = {
     }
   },
 
-  async pushUser(username, data){
+  async pushUser(u, data){
     if(!this.enabled || !this.db) return false;
     try{
       this.setStatus('syncing', 'mengunggah data user...');
-      await this.db.ref('users/' + username).set({
-        nama: data.nama, kelas: data.kelas, absen: data.absen,
-        role: data.role, dibuat: data.dibuat,
-        pass: data.pass
+      await this.db.ref('users/' + u).set({
+        nama:data.nama, kelas:data.kelas, absen:data.absen,
+        role:data.role, dibuat:data.dibuat, pass:data.pass
       });
-      this.lastSync = new Date();
-      this.setStatus('online');
+      this.lastSync = new Date(); this.setStatus('online');
       return true;
     }catch(e){
       console.warn('pushUser', e);
@@ -771,19 +860,18 @@ const Cloud = {
     }
   },
 
-  async removeUser(username){
+  async removeUser(u){
     if(!this.enabled || !this.db) return;
-    try{ await this.db.ref('users/' + username).remove(); }catch(e){}
+    try{ await this.db.ref('users/' + u).remove(); }catch(e){}
   },
 
-  async pushResult(username, result){
+  async pushResult(u, result){
     if(!this.enabled || !this.db) return false;
     try{
       this.setStatus('syncing', 'mengunggah hasil ujian...');
       const key = 'r' + Date.now() + '_' + Math.random().toString(36).slice(2,7);
-      await this.db.ref('results/' + username + '/' + key).set(result);
-      this.lastSync = new Date();
-      this.setStatus('online');
+      await this.db.ref('results/' + u + '/' + key).set(result);
+      this.lastSync = new Date(); this.setStatus('online');
       return true;
     }catch(e){
       console.warn('pushResult', e);
@@ -797,9 +885,9 @@ const Cloud = {
     try{ await this.db.ref('results').remove(); }catch(e){}
   },
 
-  async clearUserResults(username){
+  async clearUserResults(u){
     if(!this.enabled || !this.db) return;
-    try{ await this.db.ref('results/' + username).remove(); }catch(e){}
+    try{ await this.db.ref('results/' + u).remove(); }catch(e){}
   },
 
   async fetchAll(){
@@ -807,8 +895,7 @@ const Cloud = {
     try{
       this.setStatus('syncing', 'mengambil data...');
       const snap = await this.db.ref('/').once('value');
-      this.lastSync = new Date();
-      this.setStatus('online');
+      this.lastSync = new Date(); this.setStatus('online');
       return snap.val() || {};
     }catch(e){
       console.warn('fetchAll', e);
@@ -817,7 +904,6 @@ const Cloud = {
     }
   },
 
-  /* bug fix: merge cloud → local, prioritaskan password lokal agar tidak ter-overwrite */
   async syncIntoLocal(){
     const cloud = await this.fetchAll();
     if(!cloud) return false;
@@ -831,10 +917,8 @@ const Cloud = {
         localUsers[u] = cu;
       } else {
         const lu = localUsers[u];
-        // Jangan timpa password lokal dengan cloud; prioritaskan lokal jika berbeda
         const merged = Object.assign({}, cu, lu);
         if(lu.pass) merged.pass = lu.pass;
-        // jika lokal belum ada pass, pakai cloud
         if(!merged.pass && cu.pass) merged.pass = cu.pass;
         localUsers[u] = merged;
       }
@@ -857,22 +941,13 @@ const Cloud = {
     return true;
   },
 
-  async test(){
-    if(!this.db) return false;
-    try{
-      await this.db.ref('.info/connected').once('value');
-      return true;
-    }catch(e){ return false; }
-  },
-
   listenUsers(cb){
     if(!this.enabled || !this.db) return;
-    this.db.ref('users').on('value', snap => { cb(snap.val() || {}); }, err => console.warn('listenUsers', err));
+    this.db.ref('users').on('value', s=>cb(s.val()||{}), e=>console.warn('listenUsers', e));
   },
-
   listenResults(cb){
     if(!this.enabled || !this.db) return;
-    this.db.ref('results').on('value', snap => { cb(snap.val() || {}); }, err => console.warn('listenResults', err));
+    this.db.ref('results').on('value', s=>cb(s.val()||{}), e=>console.warn('listenResults', e));
   }
 };
 
@@ -885,6 +960,118 @@ function toast(msg,ms){ const t=document.getElementById('toast'); t.textContent=
 function openModal(id){ document.getElementById(id).classList.add('on'); }
 function closeModal(id){ document.getElementById(id).classList.remove('on'); }
 function escapeHtml(s){ return String(s==null?'':s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function anyModalOpen(){ return !!document.querySelector('.overlay.on'); }
+
+/* ==========================================================
+   SUARA (Web Audio API)
+   ========================================================== */
+let sfxCtx = null;
+function sfxInit(){ if(!sfxCtx){ try{ sfxCtx = new (window.AudioContext||window.webkitAudioContext)(); }catch(e){} } if(sfxCtx && sfxCtx.state==='suspended') sfxCtx.resume(); }
+function tone(freq, dur, type, vol){
+  try{
+    sfxInit(); if(!sfxCtx) return;
+    const o = sfxCtx.createOscillator(), g = sfxCtx.createGain();
+    const t = sfxCtx.currentTime;
+    o.type = type || 'sine';
+    o.frequency.value = freq;
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(vol || 0.08, t+0.015);
+    g.gain.exponentialRampToValueAtTime(0.0001, t+dur);
+    o.connect(g); g.connect(sfxCtx.destination);
+    o.start(t); o.stop(t+dur+0.05);
+  }catch(e){}
+}
+function sfxSelect(){ tone(880, 0.12, 'sine', 0.06); }
+function sfxNav(){ tone(520, 0.09, 'triangle', 0.05); }
+function sfxFlag(){ tone(660,0.08,'sine',0.05); setTimeout(()=>tone(990,0.12,'sine',0.06),80); }
+function sfxWin(){ const seq=[523,659,784,1047]; seq.forEach((f,i)=>setTimeout(()=>tone(f,0.28,'triangle',0.1), i*140)); }
+function sfxGood(){ const seq=[440,554,659]; seq.forEach((f,i)=>setTimeout(()=>tone(f,0.22,'sine',0.08), i*130)); }
+function sfxBad(){ tone(220,0.35,'sawtooth',0.07); }
+function sfxAlarm(){ playAlarm(); }
+function playAlarm(){
+  try{
+    sfxInit(); if(!sfxCtx) return;
+    let t = sfxCtx.currentTime;
+    for(let i=0;i<4;i++){
+      const o = sfxCtx.createOscillator(), g = sfxCtx.createGain();
+      o.type = 'square';
+      o.frequency.value = i%2 ? 660 : 990;
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(0.22, t+0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, t+0.28);
+      o.connect(g); g.connect(sfxCtx.destination);
+      o.start(t); o.stop(t+0.3);
+      t += 0.34;
+    }
+  }catch(e){}
+}
+
+/* ==========================================================
+   CONFETTI
+   ========================================================== */
+function launchConfetti(){
+  const cv = document.getElementById('confetti-canvas');
+  if(!cv) return;
+  cv.style.display = 'block';
+  const ctx = cv.getContext('2d');
+  const W = cv.width = window.innerWidth;
+  const H = cv.height = window.innerHeight;
+  const colors = ['#c1121f','#0b3d91','#d4a017','#12805c','#6d28d9','#f59e0b','#22c55e'];
+  const parts = [];
+  for(let i=0;i<160;i++){
+    parts.push({
+      x: Math.random()*W,
+      y: -20 - Math.random()*H*0.5,
+      vx: (Math.random()-0.5)*3,
+      vy: 2 + Math.random()*4,
+      s: 6 + Math.random()*7,
+      rot: Math.random()*Math.PI*2,
+      vr: (Math.random()-0.5)*0.25,
+      c: colors[Math.floor(Math.random()*colors.length)],
+      sh: Math.random() > 0.5 ? 'rect' : 'circ'
+    });
+  }
+  let frames = 0;
+  const maxFrames = 260;
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    parts.forEach(p=>{
+      p.x += p.vx; p.y += p.vy; p.vy += 0.05; p.rot += p.vr;
+      ctx.save();
+      ctx.translate(p.x, p.y); ctx.rotate(p.rot);
+      ctx.fillStyle = p.c;
+      if(p.sh==='rect'){ ctx.fillRect(-p.s/2, -p.s/3, p.s, p.s*0.65); }
+      else { ctx.beginPath(); ctx.arc(0,0,p.s/2,0,Math.PI*2); ctx.fill(); }
+      ctx.restore();
+    });
+    frames++;
+    if(frames < maxFrames){ requestAnimationFrame(draw); }
+    else { ctx.clearRect(0,0,W,H); cv.style.display = 'none'; }
+  }
+  draw();
+}
+
+/* ==========================================================
+   MOTIVASI
+   ========================================================== */
+const MOTIVASI = [
+  '💪 Semangat! Kamu pasti bisa!',
+  '🎯 Fokus, satu soal demi satu soal!',
+  '🌟 Kerjakan dengan jujur, hasilnya berkah!',
+  '🚀 Setengah jalan, terus maju!',
+  '🧠 Baca soal dengan teliti ya!',
+  '⭐ Sedikit lagi, tetap semangat!',
+  '🔥 Kamu lebih hebat dari yang kamu kira!',
+  '📚 Ilmu yang bermanfaat adalah investasi masa depan!'
+];
+function showMotivasi(text){
+  const el = document.getElementById('moti');
+  if(!el) return;
+  el.textContent = text;
+  el.classList.add('on');
+  clearTimeout(el._tm);
+  el._tm = setTimeout(()=>el.classList.remove('on'), 3200);
+}
 
 /* ==========================================================
    SEED ADMIN
@@ -894,7 +1081,7 @@ function seedAdmin(){
   if(!users['guru']){
     users['guru'] = {
       nama:'Guru Pengampu', kelas:'-', absen:'-',
-      pass: hashPwd('guru123'), role: 'guru', dibuat: Date.now()
+      pass: hashPwd('guru123'), role:'guru', dibuat: Date.now()
     };
     DB.set(KEY_USERS, users);
   }
@@ -927,9 +1114,7 @@ async function doRegister(){
   if(Cloud.enabled && Cloud.db){
     try{
       const snap = await Cloud.db.ref('users/' + user).once('value');
-      if(snap.exists()){
-        return toast('Username sudah terpakai (terdeteksi di cloud).');
-      }
+      if(snap.exists()) return toast('Username sudah terpakai (terdeteksi di cloud).');
     }catch(e){}
   }
 
@@ -944,7 +1129,6 @@ async function doRegister(){
   };
   users[user] = data;
   DB.set(KEY_USERS, users);
-
   if(Cloud.enabled) await Cloud.pushUser(user, data);
 
   toast(role==='guru' ? 'Akun Guru berhasil dibuat!' : 'Registrasi berhasil! Silakan masuk.');
@@ -961,25 +1145,17 @@ async function doLogin(){
   if(btn) btn.disabled = true;
   try{
     const users = DB.get(KEY_USERS, {});
-
     if(!users[user] && Cloud.enabled && Cloud.db){
       try{
         const snap = await Cloud.db.ref('users/' + user).once('value');
-        if(snap.exists()){
-          users[user] = snap.val();
-          DB.set(KEY_USERS, users);
-        }
+        if(snap.exists()){ users[user] = snap.val(); DB.set(KEY_USERS, users); }
       }catch(e){}
     }
-
     if(!users[user]) return toast('Username tidak ditemukan. Silakan daftar dulu.');
     if(users[user].pass !== hashPwd(pass)) return toast('Password salah.');
     DB.set(KEY_SESS, user);
 
-    if(Cloud.enabled){
-      // fire and forget
-      Cloud.syncIntoLocal().catch(()=>{});
-    }
+    if(Cloud.enabled) Cloud.syncIntoLocal().catch(()=>{});
 
     if(users[user].role === 'guru'){
       await renderTeacherDash(true);
@@ -1017,11 +1193,53 @@ function loadDash(){
   const me = currentUser(); if(!me || me.role!=='siswa') return;
   document.getElementById('dash-hi').textContent = 'Halo, ' + me.nama + '!';
   document.getElementById('dash-sub').textContent = 'Kelas ' + me.kelas + ' · No. Absen ' + me.absen;
+
   const res = (DB.get(KEY_RES, {})[me.user]) || [];
   document.getElementById('st-total').textContent = res.length;
   document.getElementById('st-best').textContent = res.length ? Math.max.apply(null,res.map(r=>r.skor)) : '-';
   document.getElementById('st-last').textContent = res.length ? res[res.length-1].skor : '-';
   document.getElementById('hist-card').style.display = 'none';
+
+  // XP bar
+  const xp = getXPUser(me.user);
+  const info = levelInfo(xp);
+  document.getElementById('xp-lv').textContent = 'Level ' + info.lvl + ' · ' + info.name;
+  document.getElementById('xp-fill').style.width = info.pct + '%';
+  document.getElementById('xp-txt').textContent = info.next
+    ? (info.inLevel + ' / ' + info.span + ' XP menuju ' + info.next.name)
+    : (xp + ' XP · Level Maksimal!');
+
+  renderLeaderboard(me);
+}
+
+function renderLeaderboard(me){
+  const users = DB.get(KEY_USERS, {});
+  const results = DB.get(KEY_RES, {});
+  const list = [];
+  Object.keys(users).forEach(u=>{
+    if(users[u].role!=='siswa') return;
+    if(users[u].kelas !== me.kelas) return;
+    const arr = results[u] || [];
+    const best = arr.length ? Math.max.apply(null, arr.map(r=>r.skor)) : null;
+    if(best !== null) list.push({ username:u, nama:users[u].nama, best, jml:arr.length });
+  });
+  list.sort((a,b)=> b.best - a.best || a.nama.localeCompare(b.nama));
+  const top = list.slice(0,10);
+  const box = document.getElementById('lb-list');
+  if(!top.length){
+    box.innerHTML = '<p class="hint">📭 Belum ada nilai di kelasmu. Jadilah yang pertama mengerjakan!</p>';
+    return;
+  }
+  box.innerHTML = top.map((s,i)=>{
+    const g = i===0?'g1':i===1?'g2':i===2?'g3':'';
+    const medal = i===0?'🥇':i===1?'🥈':i===2?'🥉':'';
+    const isMe = s.username === me.user;
+    return `<div class="lb-row ${isMe?'me':''}" style="animation-delay:${i*0.05}s">
+      <div class="lb-rank ${g}">${medal || (i+1)}</div>
+      <div class="lb-name">${escapeHtml(s.nama)}${isMe?' <span style="color:#b45309;font-size:.75rem">(Kamu)</span>':''}</div>
+      <div class="lb-sc">${s.best}</div>
+    </div>`;
+  }).join('');
 }
 
 function showHistory(){
@@ -1047,8 +1265,6 @@ function showHistory(){
 
 /* ==========================================================
    DASHBOARD GURU
-   bug fix: tambahkan parameter skipCloud agar tidak sync
-   berulang saat filter diubah
    ========================================================== */
 async function renderTeacherDash(skipCloud){
   const me = currentUser();
@@ -1161,12 +1377,22 @@ function viewStudent(username){
 
   document.getElementById('dt-title').innerHTML = '👤 Detail Siswa: ' + escapeHtml(u.nama);
 
+  const badges = getBadgesUser(username);
+  const badgeHtml = badges.length
+    ? '<div style="margin-top:6px">' + badges.map(id=>{
+        const b = BADGES.find(x=>x.id===id);
+        return b ? `<span style="display:inline-block;background:#fef3c7;color:#92400e;padding:3px 10px;border-radius:999px;font-size:.75rem;font-weight:700;margin:2px">${b.ic} ${b.nm}</span>` : '';
+      }).join('') + '</div>'
+    : '<span class="hint">Belum ada badge.</span>';
+
   const info = `
     <div class="detail-row"><b>Nama</b><span>${escapeHtml(u.nama)}</span></div>
     <div class="detail-row"><b>Username</b><span>@${escapeHtml(username)}</span></div>
     <div class="detail-row"><b>Kelas</b><span>${escapeHtml(u.kelas)}</span></div>
     <div class="detail-row"><b>No. Absen</b><span>${escapeHtml(u.absen)}</span></div>
     <div class="detail-row"><b>Total Ujian</b><span>${results.length} kali</span></div>
+    <div class="detail-row"><b>XP</b><span>${getXPUser(username)} XP</span></div>
+    <div class="detail-row"><b>Badge</b><span>${badgeHtml}</span></div>
     <div class="detail-row"><b>Terdaftar</b><span>${new Date(u.dibuat).toLocaleString('id-ID')}</span></div>
   `;
 
@@ -1266,7 +1492,10 @@ function showConfirm({icon, title, msg, okText, onOk}){
   const ok = document.getElementById('cf-ok');
   ok.textContent = okText || 'Ya, Lanjutkan';
   ok.disabled = false;
+  // bug fix: clear handler lama agar tidak menumpuk
+  ok.onclick = null;
   ok.onclick = async ()=>{
+    if(ok.disabled) return;
     ok.disabled = true;
     try{ await onOk(); } finally { ok.disabled = false; }
   };
@@ -1311,8 +1540,7 @@ function openCloudSettings(){
   document.getElementById('cfg-projectId').value = cfg.projectId || '';
   document.getElementById('cfg-authDomain').value = cfg.authDomain || '';
   const st = document.getElementById('cfg-status');
-  st.className = 'cfg-status';
-  st.textContent = '';
+  st.className = 'cfg-status'; st.textContent = '';
   openModal('ov-cloud');
 }
 
@@ -1337,17 +1565,15 @@ async function testCloudConfig(){
   }
   showCfgStatus('info', '⏳ Menguji koneksi ke Firebase...');
   try{
-    if(firebase.apps && firebase.apps.length){
-      try{ firebase.app().delete(); }catch(e){}
-    }
-    firebase.initializeApp({
-      apiKey: cfg.apiKey,
-      databaseURL: cfg.databaseURL,
+    const appName = 'testApp_' + Date.now();
+    const testApp = firebase.initializeApp({
+      apiKey: cfg.apiKey, databaseURL: cfg.databaseURL,
       projectId: cfg.projectId || undefined,
       authDomain: cfg.authDomain || undefined
-    });
-    const testRef = firebase.database().ref('.info/connected');
-    await testRef.once('value');
+    }, appName);
+    await testApp.database().ref('.info/connected').once('value');
+    // bug fix: cleanup app test
+    try{ await testApp.delete(); }catch(e){}
     showCfgStatus('ok', '✅ Koneksi berhasil! Firebase siap digunakan.');
   }catch(e){
     showCfgStatus('err', '❌ Koneksi gagal: ' + (e.message || e));
@@ -1360,15 +1586,12 @@ async function saveCloudConfig(){
     return showCfgStatus('err', '❌ API Key dan Database URL wajib diisi.');
   }
   DB.set(KEY_CLOUD, cfg);
-
-  Cloud.enabled = false;
-  Cloud.db = null;
+  Cloud.enabled = false; Cloud.db = null;
   const ok = Cloud.init();
   if(ok){
     showCfgStatus('ok', '✅ Konfigurasi disimpan. Cloud aktif!');
     const users = DB.get(KEY_USERS, {});
     const results = DB.get(KEY_RES, {});
-    // batched parallel
     const tasks = [];
     Object.keys(users).forEach(u => tasks.push(Cloud.pushUser(u, users[u])));
     Object.keys(results).forEach(u => {
@@ -1394,11 +1617,9 @@ function clearCloudConfig(){
     okText:'Ya, Hapus',
     onOk:()=>{
       DB.set(KEY_CLOUD, null);
-      Cloud.enabled = false;
-      Cloud.db = null;
+      Cloud.enabled = false; Cloud.db = null;
       try{ if(firebase.apps && firebase.apps.length) firebase.app().delete(); }catch(e){}
-      closeModal('ov-confirm');
-      closeModal('ov-cloud');
+      closeModal('ov-confirm'); closeModal('ov-cloud');
       Cloud.setStatus('offline');
       toast('Konfigurasi cloud dihapus.');
       renderTeacherDash(true);
@@ -1425,7 +1646,7 @@ async function syncFromCloud(manual){
    ========================================================== */
 let examState = null;
 let timerId = null;
-let audioCtx = null;
+let motiTimerId = null;
 
 function prepareQuestion(q){
   const out = Object.assign({}, q);
@@ -1463,9 +1684,11 @@ function buildExam(){
 
 function startExam(){
   const me = currentUser(); if(!me || me.role!=='siswa') return;
+  // bug fix: reset state lengkap setiap mulai ujian
   examState = {
     questions: buildExam(),
     answers: {},
+    flags: {},
     current: 0,
     violations: 0,
     active: true,
@@ -1475,6 +1698,7 @@ function startExam(){
   };
   examState.questions.forEach((q,i)=>{
     if(q.type==='match') examState.answers[i] = new Array(q.left.length).fill(-1);
+    examState.flags[i] = false;
   });
 
   go('scr-exam');
@@ -1482,8 +1706,15 @@ function startExam(){
   startTimer();
   enableAntiCheat();
   requestFullscreen();
-  try{ audioCtx = new (window.AudioContext||window.webkitAudioContext)(); }catch(e){}
+  sfxInit();
   toast('Ujian dimulai. Kerjakan dengan jujur!', 3000);
+
+  // Motivasi berkala
+  clearInterval(motiTimerId);
+  motiTimerId = setInterval(()=>{
+    if(!examState || !examState.active) return;
+    showMotivasi(MOTIVASI[Math.floor(Math.random()*MOTIVASI.length)]);
+  }, 90000);
 }
 
 function requestFullscreen(){
@@ -1531,6 +1762,11 @@ function renderQ(){
   document.getElementById('q-point').textContent = (q.type==='pg' ? CFG.poinPG : q.type==='pgk' ? CFG.poinPGK : CFG.poinMatch) + ' poin';
   document.getElementById('q-text').textContent = q.q;
 
+  // flag button
+  const fb = document.getElementById('q-flag');
+  fb.classList.toggle('on', !!examState.flags[i]);
+  fb.textContent = examState.flags[i] ? '🚩 Ditandai' : '🚩 Tandai';
+
   const body = document.getElementById('q-body');
   body.innerHTML = '';
 
@@ -1558,6 +1794,7 @@ function renderQ(){
           lbl.classList.add('sel');
         }
         if(isMulti) lbl.classList.toggle('sel', inp.checked);
+        sfxSelect();
         updateProgress();
         renderNavGrid();
       });
@@ -1583,6 +1820,7 @@ function renderQ(){
       sel.addEventListener('change', ()=>{
         examState.answers[i][li] = parseInt(sel.value,10);
         row.classList.toggle('filled', parseInt(sel.value,10) >= 0);
+        sfxSelect();
         updateProgress();
         renderNavGrid();
       });
@@ -1606,6 +1844,18 @@ function renderQ(){
   renderNavGrid();
 }
 
+function toggleFlag(){
+  if(!examState) return;
+  const i = examState.current;
+  examState.flags[i] = !examState.flags[i];
+  sfxFlag();
+  const fb = document.getElementById('q-flag');
+  fb.classList.toggle('on', !!examState.flags[i]);
+  fb.textContent = examState.flags[i] ? '🚩 Ditandai' : '🚩 Tandai';
+  renderNavGrid();
+  if(examState.flags[i]) toast('Soal ditandai untuk diperiksa kembali.', 1800);
+}
+
 function updateProgress(){
   if(!examState) return 0;
   let done = 0;
@@ -1616,7 +1866,14 @@ function updateProgress(){
     else { if(Array.isArray(a) && a.every(v=>v>=0)) done++; }
   });
   const el = document.getElementById('ex-progress');
-  if(el) el.textContent = 'Terjawab ' + done + ' dari ' + examState.questions.length;
+  const total = examState.questions.length;
+  if(el) el.textContent = 'Terjawab ' + done + ' dari ' + total;
+  const fill = document.getElementById('ex-prog-fill');
+  if(fill){
+    const pct = total ? (done/total*100) : 0;
+    fill.style.width = pct + '%';
+    fill.classList.toggle('hi', pct >= 80);
+  }
   return done;
 }
 
@@ -1634,8 +1891,9 @@ function renderNavGrid(){
     const b = document.createElement('button');
     b.textContent = i+1;
     if(done) b.classList.add('done');
+    if(examState.flags[i]) b.classList.add('flag');
     if(i === examState.current) b.classList.add('now');
-    b.onclick = ()=>{ examState.current = i; renderQ(); };
+    b.onclick = ()=>{ examState.current = i; sfxNav(); renderQ(); };
     g.appendChild(b);
   });
 }
@@ -1645,6 +1903,7 @@ function navQ(d){
   const n = examState.current + d;
   if(n<0 || n>=examState.questions.length) return;
   examState.current = n;
+  sfxNav();
   renderQ();
   window.scrollTo({top:0,behavior:'smooth'});
 }
@@ -1652,32 +1911,13 @@ function navQ(d){
 /* ==========================================================
    ANTI-CURANG
    ========================================================== */
-function playAlarm(){
-  try{
-    if(!audioCtx) audioCtx = new (window.AudioContext||window.webkitAudioContext)();
-    if(audioCtx.state === 'suspended') audioCtx.resume();
-    let t = audioCtx.currentTime;
-    for(let i=0;i<4;i++){
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.type = 'square';
-      osc.frequency.value = i%2 ? 660 : 990;
-      gain.gain.setValueAtTime(0.0001, t);
-      gain.gain.exponentialRampToValueAtTime(0.25, t+0.02);
-      gain.gain.exponentialRampToValueAtTime(0.0001, t+0.28);
-      osc.connect(gain); gain.connect(audioCtx.destination);
-      osc.start(t); osc.stop(t+0.3);
-      t += 0.34;
-    }
-  }catch(e){}
-}
 function triggerViolation(reason){
   if(!examState || !examState.active) return;
   const now = Date.now();
   if(now - examState.lastViol < 1600) return;
   examState.lastViol = now;
   examState.violations++;
-  playAlarm();
+  sfxAlarm();
   document.getElementById('viol-msg').textContent = reason;
   document.getElementById('viol-count').textContent = 'Pelanggaran ' + examState.violations + ' dari ' + CFG.maxPelanggaran;
   openModal('ov-viol');
@@ -1711,9 +1951,20 @@ function disableAntiCheat(){
   document.removeEventListener('fullscreenchange', onFsChange);
   window.removeEventListener('beforeunload', onBeforeUnload);
 }
-function onVisibility(){ if(document.hidden && examState && examState.active) triggerViolation('Anda terdeteksi berpindah tab atau meninggalkan halaman ujian.'); }
-function onBlur(){ if(examState && examState.active) triggerViolation('Jendela ujian kehilangan fokus. Jangan membuka aplikasi atau jendela lain!'); }
-function onFsChange(){ if(examState && examState.active && !document.fullscreenElement) triggerViolation('Anda keluar dari mode layar penuh ujian.'); }
+function onVisibility(){
+  if(document.hidden && examState && examState.active)
+    triggerViolation('Anda terdeteksi berpindah tab atau meninggalkan halaman ujian.');
+}
+function onBlur(){
+  if(!examState || !examState.active) return;
+  // bug fix: jangan trigger saat modal peringatan sedang terbuka
+  if(anyModalOpen()) return;
+  triggerViolation('Jendela ujian kehilangan fokus. Jangan membuka aplikasi atau jendela lain!');
+}
+function onFsChange(){
+  if(examState && examState.active && !document.fullscreenElement && !anyModalOpen())
+    triggerViolation('Anda keluar dari mode layar penuh ujian.');
+}
 function blockCtx(e){ if(examState && examState.active) e.preventDefault(); }
 function blockCopy(e){ if(examState && examState.active) e.preventDefault(); }
 function blockKeys(e){
@@ -1733,9 +1984,16 @@ function confirmSubmit(){
   if(!examState || !examState.active) return;
   const done = updateProgress();
   const total = examState.questions.length;
-  document.getElementById('submit-msg').innerHTML = done < total
-    ? `Masih ada <b>${total-done}</b> soal yang belum dijawab lengkap. Yakin ingin mengumpulkan sekarang?`
-    : 'Semua soal telah dijawab. Yakin ingin mengumpulkan jawaban?';
+  const flagged = Object.keys(examState.flags).filter(k=>examState.flags[k]).length;
+  let msg = '';
+  if(done < total){
+    msg = `Masih ada <b>${total-done}</b> soal yang belum dijawab lengkap.`;
+  } else {
+    msg = 'Semua soal telah dijawab.';
+  }
+  if(flagged) msg += ` <br><span style="color:#b45309">🚩 ${flagged} soal ditandai untuk diperiksa.</span>`;
+  msg += '<br><br>Yakin ingin mengumpulkan sekarang?';
+  document.getElementById('submit-msg').innerHTML = msg;
   const btn = document.getElementById('btn-confirm-submit');
   if(btn) btn.disabled = false;
   openModal('ov-submit');
@@ -1745,9 +2003,9 @@ async function submitExam(auto){
   if(!examState || !examState.active) return;
   examState.active = false;
   clearInterval(timerId);
+  clearInterval(motiTimerId);
   disableAntiCheat();
-  closeModal('ov-submit');
-  closeModal('ov-viol');
+  closeModal('ov-submit'); closeModal('ov-viol');
   const btn = document.getElementById('btn-confirm-submit');
   if(btn) btn.disabled = true;
   try{ if(document.fullscreenElement) document.exitFullscreen(); }catch(e){}
@@ -1756,30 +2014,64 @@ async function submitExam(auto){
   const hasil = gradeExam();
 
   const benar = hasil.review.filter(r=>r.status==='benar').length;
+
+  // hitung XP
+  const me = currentUser();
+  let xpGain = 0, leveledUp = false;
+  let newBadges = [];
+  if(me){
+    xpGain = hasil.score + (benar * 2) - (examState.violations * 10);
+    xpGain = Math.max(0, xpGain);
+    const beforeInfo = levelInfo(getXPUser(me.user));
+    const afterXP = addXP(me.user, xpGain);
+    const afterInfo = levelInfo(afterXP);
+    leveledUp = afterInfo.lvl > beforeInfo.lvl;
+
+    // badges
+    const prevResults = DB.get(KEY_RES, {})[me.user] || [];
+    const prevBest = prevResults.length ? Math.max.apply(null, prevResults.map(r=>r.skor)) : null;
+    const jmlUjian = prevResults.length + 1;
+
+    if(hasil.score === 100) if(awardBadge(me.user,'perfect')) newBadges.push('perfect');
+    if(hasil.score >= 90) if(awardBadge(me.user,'excellent')) newBadges.push('excellent');
+    if(hasil.score >= 80) if(awardBadge(me.user,'good')) newBadges.push('good');
+    if(hasil.score >= 70) if(awardBadge(me.user,'pass')) newBadges.push('pass');
+    if(waktuPakai < 30) if(awardBadge(me.user,'fast')) newBadges.push('fast');
+    if(examState.violations === 0) if(awardBadge(me.user,'honest')) newBadges.push('honest');
+    if(jmlUjian >= 3) if(awardBadge(me.user,'persistent')) newBadges.push('persistent');
+    if(prevBest !== null && hasil.score - prevBest >= 10) if(awardBadge(me.user,'riser')) newBadges.push('riser');
+  }
+
   const resultData = {
     tanggal: new Date().toLocaleString('id-ID',{dateStyle:'medium',timeStyle:'short'}),
     skor: hasil.score,
     benar: benar,
     waktu: waktuPakai,
-    pelanggaran: examState.violations
+    pelanggaran: examState.violations,
+    xp: xpGain
   };
 
-  const me = currentUser();
   let cloudSaved = false;
   if(me){
     const all = DB.get(KEY_RES, {});
     if(!all[me.user]) all[me.user] = [];
     all[me.user].push(resultData);
     DB.set(KEY_RES, all);
-
-    if(Cloud.enabled){
-      cloudSaved = await Cloud.pushResult(me.user, resultData);
-    }
+    if(Cloud.enabled) cloudSaved = await Cloud.pushResult(me.user, resultData);
   }
 
-  renderResult(hasil, waktuPakai, auto, cloudSaved);
+  renderResult(hasil, waktuPakai, auto, cloudSaved, {xpGain, leveledUp, newBadges});
   go('scr-result');
   loadDash();
+
+  // Suara & efek
+  if(hasil.score >= 70){
+    setTimeout(()=>{ sfxWin(); launchConfetti(); }, 400);
+  } else if(hasil.score >= 50){
+    setTimeout(()=>sfxGood(), 400);
+  } else {
+    setTimeout(()=>sfxBad(), 400);
+  }
 }
 
 function gradeExam(){
@@ -1826,14 +2118,13 @@ function predikat(s){
   return '💪 Ayo semangat! Pelajari ulang materi dari awal dengan tekun.';
 }
 
-function renderResult(h, waktu, auto, cloudSaved){
+function renderResult(h, waktu, auto, cloudSaved, extra){
   const me = currentUser();
   document.getElementById('res-name').textContent =
     (me ? me.nama + ' · Kelas ' + me.kelas : '') + (auto ? ' · (Dikumpulkan otomatis)' : '');
   document.getElementById('res-score').textContent = h.score;
   document.getElementById('ring').style.setProperty('--pct', h.score + '%');
 
-  // bug fix: hitung status dengan benar termasuk sebagian & kosong
   const benar = h.review.filter(r=>r.status==='benar').length;
   const sebagian = h.review.filter(r=>r.status==='sebagian').length;
   const kosong = h.review.filter(r=>r.status==='kosong').length;
@@ -1859,31 +2150,70 @@ function renderResult(h, waktu, auto, cloudSaved){
     syncEl.style.color = 'var(--muted)';
   }
 
+  // XP info
+  const xpEl = document.getElementById('res-xp');
+  if(extra && me){
+    let txt = '⭐ +' + extra.xpGain + ' XP diperoleh!';
+    if(extra.leveledUp){
+      const info = levelInfo(getXPUser(me.user));
+      txt += ' 🎉 Naik ke Level ' + info.lvl + ' (' + info.name + ')!';
+    }
+    if(extra.newBadges && extra.newBadges.length){
+      const names = extra.newBadges.map(id=>{
+        const b = BADGES.find(x=>x.id===id);
+        return b ? b.ic + ' ' + b.nm : '';
+      }).filter(Boolean).join(', ');
+      txt += ' 🏆 Badge baru: ' + names;
+    }
+    xpEl.textContent = txt;
+  } else {
+    xpEl.textContent = '';
+  }
+
+  // Badge grid
+  const badgeGrid = document.getElementById('badge-grid');
+  if(badgeGrid && me){
+    const earned = getBadgesUser(me.user);
+    badgeGrid.innerHTML = BADGES.map((b,idx)=>{
+      const has = earned.includes(b.id);
+      return `<div class="badge-item ${has?'earned':''}" style="animation-delay:${idx*0.08}s">
+        <span class="b-ic">${b.ic}</span>
+        <div class="b-nm">${b.nm}</div>
+        <div class="b-ds">${b.ds}</div>
+      </div>`;
+    }).join('');
+  }
+
   const list = document.getElementById('review-list');
   list.innerHTML = h.review.map((r,i)=>{
     const q = r.q;
     const cls = r.status==='benar' ? 'ok' : r.status==='sebagian' ? 'part' : (r.status==='kosong' ? 'empty' : 'no');
     const icon = r.status==='benar' ? '✅' : (r.status==='sebagian' ? '🟡' : (r.status==='kosong' ? '⚪' : '❌'));
-    let jawabUser='', jawabBenar='';
+    let jawabUserHtml='', jawabBenarHtml='';
+
     if(q.type==='pg'){
-      jawabUser = (r.ans!==undefined && r.ans!==null) ? q.opts[r.ans] : '(tidak dijawab)';
-      jawabBenar = q.opts[q.correctIdx];
+      const userTxt = (r.ans!==undefined && r.ans!==null) ? q.opts[r.ans] : '(tidak dijawab)';
+      jawabUserHtml = escapeHtml(userTxt);
+      jawabBenarHtml = escapeHtml(q.opts[q.correctIdx]);
     } else if(q.type==='pgk'){
-      jawabUser = (Array.isArray(r.ans)&&r.ans.length) ? r.ans.map(x=>q.opts[x]).join(' • ') : '(tidak dijawab)';
-      jawabBenar = q.correctSet.map(x=>q.opts[x]).join(' • ');
+      const userTxt = (Array.isArray(r.ans)&&r.ans.length) ? r.ans.map(x=>q.opts[x]).join(' • ') : '(tidak dijawab)';
+      jawabUserHtml = escapeHtml(userTxt);
+      jawabBenarHtml = escapeHtml(q.correctSet.map(x=>q.opts[x]).join(' • '));
     } else {
-      jawabUser = q.left.map((l,k)=>{
+      // bug fix: escape tiap item dulu, baru join dengan <br>
+      jawabUserHtml = q.left.map((l,k)=>{
         const v = (r.ans && r.ans[k]>=0) ? q.right[r.ans[k]] : '(belum dipasangkan)';
-        return l + ' → ' + v;
+        return escapeHtml(l) + ' → ' + escapeHtml(v);
       }).join('<br>');
-      jawabBenar = q.left.map((l,k)=> l + ' → ' + q.right[q.correctPos[k]]).join('<br>');
+      jawabBenarHtml = q.left.map((l,k)=> escapeHtml(l) + ' → ' + escapeHtml(q.right[q.correctPos[k]])).join('<br>');
     }
+
     const showJawabBenar = r.status !== 'benar';
     return `<div class="review-item ${cls}">
       <div class="rv-q">${icon} Soal ${i+1}. ${escapeHtml(q.q)}</div>
       <div class="rv-a">
-        <div><b>Jawabanmu:</b> ${r.status==='benar' ? escapeHtml(jawabUser) : '<i>'+escapeHtml(jawabUser)+'</i>'}</div>
-        ${showJawabBenar ? '<div style="margin-top:5px"><b>Jawaban benar:</b> '+escapeHtml(jawabBenar)+'</div>' : ''}
+        <div><b>Jawabanmu:</b> ${r.status==='benar' ? jawabUserHtml : '<i>'+jawabUserHtml+'</i>'}</div>
+        ${showJawabBenar ? '<div style="margin-top:5px"><b>Jawaban benar:</b> '+jawabBenarHtml+'</div>' : ''}
       </div>
       ${q.exp ? '<div class="exp">💡 '+escapeHtml(q.exp)+'</div>' : ''}
     </div>`;
@@ -1895,7 +2225,6 @@ function renderResult(h, waktu, auto, cloudSaved){
    ========================================================== */
 (function init(){
   seedAdmin();
-
   Cloud.init();
   Cloud.setStatus(Cloud.status);
 
@@ -1913,9 +2242,7 @@ function renderResult(h, waktu, auto, cloudSaved){
   if(rgPass) rgPass.addEventListener('keydown', e=>{ if(e.key==='Enter') doRegister(); });
 
   setInterval(()=>{
-    if(Cloud.enabled && Cloud.status !== 'syncing'){
-      Cloud.setStatus('online');
-    }
+    if(Cloud.enabled && Cloud.status !== 'syncing') Cloud.setStatus('online');
   }, 30000);
 })();
 </script>
