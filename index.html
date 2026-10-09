@@ -182,7 +182,7 @@ table tr:hover td{background:#f8faff}
 .cloud-dot.error{background:#ef4444;box-shadow:0 0 0 4px rgba(239,68,68,.18)}
 @keyframes pulseDot{50%{opacity:.5}}
 .cloud-bar b{color:#334155}
-.cloud-bar .sp{margin-left:auto;display:flex;gap:8px}
+.cloud-bar .sp{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
 
 .setup-steps{background:#f8fafc;border:1px dashed #cbd5e1;border-radius:10px;padding:12px 16px;margin:12px 0;font-size:.84rem;color:#475569}
 .setup-steps ol{padding-left:20px}
@@ -225,6 +225,11 @@ table tr:hover td{background:#f8faff}
 
 .moti{position:fixed;top:18px;left:50%;transform:translateX(-50%) translateY(-120px);background:linear-gradient(135deg,#7c3aed,#5b21b6);color:#fff;padding:12px 26px;border-radius:999px;font-weight:700;font-size:.9rem;z-index:290;transition:.45s cubic-bezier(.34,1.56,.64,1);box-shadow:0 12px 32px rgba(109,40,217,.4);opacity:0;pointer-events:none;max-width:90vw;text-align:center}
 .moti.on{transform:translateX(-50%) translateY(0);opacity:1}
+
+/* Banner kode kelas */
+.code-banner{background:linear-gradient(120deg,#fff7ed,#fef3c7);border:1.5px solid #fcd34d;border-radius:14px;padding:14px 18px;margin-top:14px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.code-banner .ic{font-size:1.6rem}
+.code-banner .tx{flex:1;min-width:180px;font-size:.88rem;color:#78350f}
 
 @media print{.btn,.btn-row,.hero,.exam-bar{display:none!important}.card{box-shadow:none;border:1px solid #ccc}}
 </style>
@@ -293,6 +298,18 @@ table tr:hover td{background:#f8faff}
       <button class="btn btn-primary btn-block" id="btn-reg" onclick="doRegister()">Daftar Sekarang</button>
     </div>
   </div>
+
+  <!-- Kode Kelas -->
+  <div class="card" style="max-width:520px;margin:14px auto 0;padding:16px 20px">
+    <h2 style="font-size:.98rem">🔗 Kode Kelas (dari Guru)</h2>
+    <p class="hint" style="margin-bottom:8px">Tempel kode kelas dari guru agar nilai ujianmu otomatis terkirim ke guru dan bisa dilihat dari perangkat lain.</p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <input id="cc-input" placeholder="Tempel kode kelas di sini" style="flex:1;min-width:180px;padding:10px 12px;border:1.5px solid #d6deeb;border-radius:10px;font-size:.88rem;font-family:inherit;background:#fbfcfe">
+      <button class="btn btn-blue btn-sm" onclick="applyClassCodeFromInput()">Hubungkan</button>
+      <button class="btn btn-ghost btn-sm" onclick="clearClassCode()" id="cc-clear" style="display:none">Putuskan</button>
+    </div>
+    <p class="hint" id="cc-status" style="margin-top:8px;font-size:.78rem"></p>
+  </div>
 </div>
 
 <!-- ================= DASHBOARD SISWA ================= -->
@@ -303,6 +320,13 @@ table tr:hover td{background:#f8faff}
     <p id="dash-sub">Siap mengerjakan Asesmen Sumatif Tengah Semester?</p>
   </div>
 
+  <!-- Banner peringatan cloud -->
+  <div id="cloud-hint" class="code-banner" style="display:none">
+    <span class="ic">⚠️</span>
+    <div class="tx"><b>Cloud belum aktif.</b> Minta <b>Kode Kelas</b> ke guru, lalu masukkan agar nilai ujianmu otomatis terkirim.</div>
+    <button class="btn btn-blue btn-sm" onclick="promptClassCode()">Masukkan Kode</button>
+  </div>
+
   <div class="card">
     <h2>📋 Ketentuan Asesmen</h2>
     <ul class="rule">
@@ -311,7 +335,7 @@ table tr:hover td{background:#f8faff}
       <li><b>Soal diacak</b> dari bank soal yang besar (Bab 3 &amp; Bab 4).</li>
       <li><b>Ujian mode layar penuh.</b> Keluar dari halaman ujian akan memicu <b>peringatan + alarm</b>.</li>
       <li>Pelanggaran <b>3 kali</b> akan membuat ujian <b>otomatis dikumpulkan</b>.</li>
-      <li>Hasil ujian otomatis tersinkronisasi ke <b>database online</b> (jika diaktifkan guru).</li>
+      <li>Hasil ujian otomatis tersinkronisasi ke <b>database online</b> (jika kode kelas diisi).</li>
     </ul>
     <div class="strip">
       <div class="box"><b id="st-total">0</b><span>Total Ujian</span></div>
@@ -362,12 +386,13 @@ table tr:hover td{background:#f8faff}
       <span class="hint" id="cloud-info"></span>
       <div class="sp">
         <button class="btn btn-ghost btn-sm" onclick="openCloudSettings()">⚙️ Pengaturan Cloud</button>
-        <button class="btn btn-blue btn-sm" onclick="syncFromCloud(true)">🔄 Refresh dari Cloud</button>
+        <button class="btn btn-gold btn-sm" onclick="showClassCode()">🔗 Kode Kelas</button>
+        <button class="btn btn-blue btn-sm" onclick="syncFromCloud(true)">🔄 Refresh</button>
       </div>
     </div>
     <p class="hint">
-      💡 Jika cloud <b>online</b>, nilai siswa yang dikerjakan di perangkat lain akan otomatis muncul di sini.
-      Jika belum dikonfigurasi, data hanya tersimpan di perangkat ini (offline).
+      💡 <b>Real-time aktif:</b> nilai siswa yang dikerjakan di perangkat lain akan muncul di sini <b>otomatis tanpa refresh</b> selama cloud online.
+      Bagikan <b>Kode Kelas</b> ke siswa agar perangkat mereka terhubung ke cloud yang sama.
     </p>
   </div>
 
@@ -470,8 +495,10 @@ table tr:hover td{background:#f8faff}
     <p class="hint mt" id="res-predikat"></p>
     <p class="hint" id="res-sync" style="color:var(--hijau);font-weight:600"></p>
     <p class="hint mt" id="res-xp" style="color:#6d28d9;font-weight:700"></p>
+    <p class="hint mt" id="res-email-status" style="font-weight:600"></p>
     <div class="btn-row" style="justify-content:center">
       <button class="btn btn-primary" onclick="go('scr-dash')">🏠 Kembali ke Beranda</button>
+      <button class="btn btn-blue" id="btn-email-result" onclick="emailMyResult()">📧 Kirim Hasil ke Email Guru</button>
       <button class="btn btn-ghost" onclick="window.print()">🖨️ Cetak Hasil</button>
     </div>
   </div>
@@ -539,6 +566,23 @@ table tr:hover td{background:#f8faff}
   </div>
 </div>
 
+<!-- ================= MODAL KODE KELAS ================= -->
+<div class="overlay" id="ov-code">
+  <div class="modal">
+    <span class="ic">🔗</span>
+    <h3>Kode Kelas</h3>
+    <p class="hint">Bagikan kode ini ke siswa (WhatsApp/Google Classroom). Siswa menempel kode di halaman login supaya nilai ujiannya otomatis terkirim ke cloud dan bisa dilihat dari perangkat Bapak/Ibu.</p>
+    <div class="field" style="margin-top:12px">
+      <textarea id="code-text" readonly rows="5" style="width:100%;font-family:'Consolas',monospace;font-size:.76rem;padding:10px;border:1.5px solid #d6deeb;border-radius:10px;background:#fbfcfe;word-break:break-all" onclick="this.select()"></textarea>
+    </div>
+    <p class="hint" id="code-meta" style="font-size:.76rem"></p>
+    <div class="btn-row" style="justify-content:center">
+      <button class="btn btn-ghost" onclick="closeModal('ov-code')">Tutup</button>
+      <button class="btn btn-primary" onclick="copyClassCode()">📋 Copy Kode</button>
+    </div>
+  </div>
+</div>
+
 <!-- ================= MODAL CLOUD SETTINGS ================= -->
 <div class="overlay" id="ov-cloud">
   <div class="modal wide">
@@ -580,6 +624,30 @@ table tr:hover td{background:#f8faff}
       </div>
     </div>
 
+    <div class="divider"></div>
+    <h3 style="color:var(--merah);font-size:1rem">📧 Email Guru</h3>
+    <p class="hint" style="margin-bottom:10px">Nilai siswa dapat dikirim otomatis ke email guru.</p>
+    <div class="field">
+      <label>Email Penerima (Guru)</label>
+      <input id="cfg-emailGuru" type="email" placeholder="guru@sekolah.sch.id" autocomplete="off">
+    </div>
+
+    <label style="display:flex;align-items:center;gap:8px;cursor:pointer;margin:8px 0 14px">
+      <input type="checkbox" id="cfg-autoEmail" style="width:17px;height:17px;accent-color:var(--merah)">
+      <span style="font-size:.86rem">Kirim email <b>otomatis</b> ke guru setiap siswa selesai ujian (memerlukan EmailJS di bawah)</span>
+    </label>
+
+    <details style="background:#f8fafc;border:1px dashed #cbd5e1;border-radius:10px;padding:12px 14px">
+      <summary style="cursor:pointer;font-weight:700;font-size:.88rem;color:#334155">⚙️ Pengaturan EmailJS (Opsional — untuk kirim otomatis tanpa buka aplikasi email)</summary>
+      <p class="hint" style="margin:8px 0">
+        Daftar gratis di <code>emailjs.com</code>, hubungkan dengan email guru, buat template, lalu isi 3 field di bawah.
+        Jika kosong, aplikasi akan memakai <b>mailto</b> (membuka aplikasi email default).
+      </p>
+      <div class="field"><label>Service ID</label><input id="cfg-ejs-service" placeholder="service_xxxxxxx" autocomplete="off"></div>
+      <div class="field"><label>Template ID</label><input id="cfg-ejs-template" placeholder="template_xxxxxxx" autocomplete="off"></div>
+      <div class="field"><label>Public Key</label><input id="cfg-ejs-key" placeholder="xxxxxxxxxxxxxxxx" autocomplete="off"></div>
+    </details>
+
     <div id="cfg-status" class="cfg-status"></div>
 
     <div class="btn-row" style="justify-content:flex-end;margin-top:18px">
@@ -596,10 +664,11 @@ table tr:hover td{background:#f8faff}
 <div class="moti" id="moti"></div>
 
 <!-- ==========================================================
-     FIREBASE SDK
+     FIREBASE SDK + EMAILJS
      ========================================================== -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
 <script>
 /* ==========================================================
@@ -786,10 +855,11 @@ function awardBadge(u, id){
 }
 
 /* ==========================================================
-   CLOUD (FIREBASE RTDB)
+   CLOUD (FIREBASE RTDB) + REAL-TIME LISTENERS
    ========================================================== */
 const Cloud = {
   enabled:false, db:null, config:null, status:'offline', lastSync:null, _initializing:false,
+  _listeners: [],
 
   init(){
     if(this._initializing) return this.enabled;
@@ -825,7 +895,7 @@ const Cloud = {
     if(!dot || !lbl) return;
     dot.className = 'cloud-dot ' + (s==='offline' ? '' : s);
     if(s==='online'){
-      lbl.textContent = '🟢 Cloud Online';
+      lbl.textContent = '🟢 Cloud Online (Real-time)';
       lbl.style.color = '#166534';
       inf.textContent = this.lastSync ? '· Sinkron terakhir: ' + this.lastSync.toLocaleTimeString('id-ID') : '';
     } else if(s==='syncing'){
@@ -846,17 +916,14 @@ const Cloud = {
   async pushUser(u, data){
     if(!this.enabled || !this.db) return false;
     try{
-      this.setStatus('syncing', 'mengunggah data user...');
       await this.db.ref('users/' + u).set({
         nama:data.nama, kelas:data.kelas, absen:data.absen,
         role:data.role, dibuat:data.dibuat, pass:data.pass
       });
-      this.lastSync = new Date(); this.setStatus('online');
+      this.lastSync = new Date();
       return true;
     }catch(e){
-      console.warn('pushUser', e);
-      this.setStatus('error', 'Gagal unggah user: ' + (e.message||e));
-      return false;
+      console.warn('pushUser', e); return false;
     }
   },
 
@@ -868,15 +935,12 @@ const Cloud = {
   async pushResult(u, result){
     if(!this.enabled || !this.db) return false;
     try{
-      this.setStatus('syncing', 'mengunggah hasil ujian...');
-      const key = 'r' + Date.now() + '_' + Math.random().toString(36).slice(2,7);
-      await this.db.ref('results/' + u + '/' + key).set(result);
-      this.lastSync = new Date(); this.setStatus('online');
+      const id = result.id || ('r' + Date.now() + '_' + Math.random().toString(36).slice(2,7));
+      await this.db.ref('results/' + u + '/' + id).set(Object.assign({}, result, {id}));
+      this.lastSync = new Date();
       return true;
     }catch(e){
-      console.warn('pushResult', e);
-      this.setStatus('error', 'Gagal unggah hasil: ' + (e.message||e));
-      return false;
+      console.warn('pushResult', e); return false;
     }
   },
 
@@ -893,14 +957,11 @@ const Cloud = {
   async fetchAll(){
     if(!this.enabled || !this.db) return null;
     try{
-      this.setStatus('syncing', 'mengambil data...');
       const snap = await this.db.ref('/').once('value');
-      this.lastSync = new Date(); this.setStatus('online');
+      this.lastSync = new Date();
       return snap.val() || {};
     }catch(e){
-      console.warn('fetchAll', e);
-      this.setStatus('error', 'Gagal ambil data: ' + (e.message||e));
-      return null;
+      console.warn('fetchAll', e); return null;
     }
   },
 
@@ -916,10 +977,10 @@ const Cloud = {
       if(!localUsers[u]){
         localUsers[u] = cu;
       } else {
+        // Cloud jadi sumber kebenaran; pertahankan pass lokal jika cloud tidak punya
         const lu = localUsers[u];
-        const merged = Object.assign({}, cu, lu);
-        if(lu.pass) merged.pass = lu.pass;
-        if(!merged.pass && cu.pass) merged.pass = cu.pass;
+        const merged = Object.assign({}, lu, cu);
+        if(!cu.pass && lu.pass) merged.pass = lu.pass;
         localUsers[u] = merged;
       }
     });
@@ -927,27 +988,163 @@ const Cloud = {
     const cloudRes = cloud.results || {};
     Object.keys(cloudRes).forEach(u=>{
       if(!localRes[u]) localRes[u] = [];
-      const arr = cloudRes[u];
-      const localKeys = new Set(localRes[u].map(r=>r.tanggal + '|' + r.skor));
+      const arr = cloudRes[u] || {};
+      const localKeys = new Set(localRes[u].map(r => r.id || (r.tanggal + '|' + r.skor)));
       Object.keys(arr).forEach(k=>{
         const r = arr[k];
-        const key = r.tanggal + '|' + r.skor;
-        if(!localKeys.has(key)) localRes[u].push(r);
+        const key = r.id || k || (r.tanggal + '|' + r.skor);
+        if(!localKeys.has(key)){
+          // pastikan id ikut tersimpan
+          if(!r.id) r.id = k;
+          localRes[u].push(r);
+          localKeys.add(key);
+        }
       });
     });
 
     DB.set(KEY_USERS, localUsers);
     DB.set(KEY_RES, localRes);
+    this.lastSync = new Date();
     return true;
   },
 
-  listenUsers(cb){
-    if(!this.enabled || !this.db) return;
-    this.db.ref('users').on('value', s=>cb(s.val()||{}), e=>console.warn('listenUsers', e));
+  /* ==== REAL-TIME LISTENERS ==== */
+  attachListeners(onChange){
+    if(!this.enabled || !this.db) return false;
+    this.detachListeners();
+
+    const self = this;
+    let debTimer = null;
+    const handler = () => {
+      clearTimeout(debTimer);
+      debTimer = setTimeout(async ()=>{
+        await self.syncIntoLocal();
+        if(typeof onChange === 'function'){ try{ onChange(); }catch(e){} }
+      }, 300);
+    };
+
+    const uRef = this.db.ref('users');
+    const rRef = this.db.ref('results');
+    const uH = uRef.on('value', handler, e=>console.warn('users listener', e));
+    const rH = rRef.on('value', handler, e=>console.warn('results listener', e));
+    this._listeners = [
+      {ref:uRef, event:'value', handler:uH},
+      {ref:rRef, event:'value', handler:rH}
+    ];
+    return true;
   },
-  listenResults(cb){
-    if(!this.enabled || !this.db) return;
-    this.db.ref('results').on('value', s=>cb(s.val()||{}), e=>console.warn('listenResults', e));
+
+  detachListeners(){
+    this._listeners.forEach(l=>{
+      try{ l.ref.off(l.event, l.handler); }catch(e){}
+    });
+    this._listeners = [];
+  }
+};
+
+/* ==========================================================
+   EMAIL SERVICE (EmailJS + fallback mailto)
+   ========================================================== */
+const EmailService = {
+  teacherEmail:'', serviceId:'', templateId:'', publicKey:'', _inited:false,
+
+  init(force){
+    if(this._inited && !force) return;
+    const cfg = DB.get(KEY_CLOUD, {}) || {};
+    this.teacherEmail = (cfg.emailGuru || '').trim();
+    this.serviceId = (cfg.ejsService || '').trim();
+    this.templateId = (cfg.ejsTemplate || '').trim();
+    this.publicKey = (cfg.ejsKey || '').trim();
+    if(this.serviceId && this.publicKey && typeof emailjs !== 'undefined'){
+      try{ emailjs.init({ publicKey: this.publicKey }); }catch(e){ console.warn('emailjs init', e); }
+    }
+    this._inited = true;
+  },
+
+  hasTeacherEmail(){ this.init(); return !!this.teacherEmail; },
+
+  isFullyConfigured(){
+    this.init();
+    return !!(this.teacherEmail && this.serviceId && this.templateId && this.publicKey
+              && typeof emailjs !== 'undefined');
+  },
+
+  buildSubject(student, result){
+    return `[ASTS PPKn] Hasil Ujian ${student.nama} (${student.kelas}) - Skor ${result.skor}`;
+  },
+
+  buildBody(student, result, allResults){
+    const L = [];
+    L.push('HASIL ASESMEN SUMATIF TENGAH SEMESTER');
+    L.push('Pendidikan Pancasila - Kelas VII');
+    L.push('========================================');
+    L.push('');
+    L.push('Nama        : ' + student.nama);
+    L.push('Username    : @' + (student.user || student.username));
+    L.push('Kelas       : ' + student.kelas);
+    L.push('No. Absen   : ' + student.absen);
+    L.push('');
+    L.push('--- HASIL UJIAN TERBARU ---');
+    L.push('Tanggal      : ' + result.tanggal);
+    L.push('Skor         : ' + result.skor + ' / 100');
+    L.push('Jawaban benar: ' + result.benar);
+    L.push('Durasi       : ' + result.waktu + ' menit');
+    L.push('Pelanggaran  : ' + result.pelanggaran + ' kali');
+    L.push('XP diperoleh : ' + (result.xp || 0));
+    L.push('');
+    if(allResults && allResults.length > 1){
+      L.push('--- RIWAYAT SEMUA UJIAN ---');
+      allResults.forEach((r,i)=>{
+        L.push(`${i+1}. ${r.tanggal} - Skor ${r.skor} (benar ${r.benar}, ${r.waktu} menit, pelanggaran ${r.pelanggaran})`);
+      });
+      const best = Math.max.apply(null, allResults.map(r=>r.skor));
+      const rata = Math.round(allResults.reduce((a,b)=>a+b.skor,0)/allResults.length);
+      L.push('');
+      L.push('Nilai Terbaik : ' + best);
+      L.push('Rata-rata     : ' + rata);
+      L.push('');
+    }
+    L.push('Email ini dikirim dari aplikasi ASTS Pendidikan Pancasila.');
+    return L.join('\n');
+  },
+
+  async send(student, result, allResults){
+    this.init(true);
+    if(!this.teacherEmail){
+      throw new Error('Email guru belum dikonfigurasi. Buka Pengaturan Cloud untuk mengisi email guru.');
+    }
+    const subject = this.buildSubject(student, result);
+    const body = this.buildBody(student, result, allResults);
+
+    if(this.isFullyConfigured()){
+      const params = {
+        to_email: this.teacherEmail,
+        subject: subject,
+        message: body,
+        student_name: student.nama,
+        student_username: student.user || student.username,
+        student_class: student.kelas,
+        student_absen: student.absen,
+        score: result.skor,
+        correct: result.benar,
+        duration: result.waktu,
+        violations: result.pelanggaran,
+        date: result.tanggal,
+        xp: result.xp || 0
+      };
+      try{
+        const res = await emailjs.send(this.serviceId, this.templateId, params);
+        return { mode:'emailjs', ok:true, res };
+      }catch(e){
+        console.warn('EmailJS failed, fallback ke mailto', e);
+      }
+    }
+    // fallback mailto
+    const url = 'mailto:' + encodeURIComponent(this.teacherEmail) +
+                '?subject=' + encodeURIComponent(subject) +
+                '&body=' + encodeURIComponent(body);
+    window.location.href = url;
+    return { mode:'mailto', ok:true };
   }
 };
 
@@ -963,7 +1160,7 @@ function escapeHtml(s){ return String(s==null?'':s).replace(/[&<>"']/g, c=>({'&'
 function anyModalOpen(){ return !!document.querySelector('.overlay.on'); }
 
 /* ==========================================================
-   SUARA (Web Audio API)
+   SUARA
    ========================================================== */
 let sfxCtx = null;
 function sfxInit(){ if(!sfxCtx){ try{ sfxCtx = new (window.AudioContext||window.webkitAudioContext)(); }catch(e){} } if(sfxCtx && sfxCtx.state==='suspended') sfxCtx.resume(); }
@@ -984,8 +1181,8 @@ function tone(freq, dur, type, vol){
 function sfxSelect(){ tone(880, 0.12, 'sine', 0.06); }
 function sfxNav(){ tone(520, 0.09, 'triangle', 0.05); }
 function sfxFlag(){ tone(660,0.08,'sine',0.05); setTimeout(()=>tone(990,0.12,'sine',0.06),80); }
-function sfxWin(){ const seq=[523,659,784,1047]; seq.forEach((f,i)=>setTimeout(()=>tone(f,0.28,'triangle',0.1), i*140)); }
-function sfxGood(){ const seq=[440,554,659]; seq.forEach((f,i)=>setTimeout(()=>tone(f,0.22,'sine',0.08), i*130)); }
+function sfxWin(){ [523,659,784,1047].forEach((f,i)=>setTimeout(()=>tone(f,0.28,'triangle',0.1), i*140)); }
+function sfxGood(){ [440,554,659].forEach((f,i)=>setTimeout(()=>tone(f,0.22,'sine',0.08), i*130)); }
 function sfxBad(){ tone(220,0.35,'sawtooth',0.07); }
 function sfxAlarm(){ playAlarm(); }
 function playAlarm(){
@@ -1088,6 +1285,142 @@ function seedAdmin(){
 }
 
 /* ==========================================================
+   KODE KELAS
+   ========================================================== */
+function generateClassCode(){
+  const cfg = DB.get(KEY_CLOUD, {}) || {};
+  if(!cfg.apiKey || !cfg.databaseURL) throw new Error('Konfigurasi cloud belum lengkap.');
+  const payload = {
+    k: cfg.apiKey, u: cfg.databaseURL,
+    p: cfg.projectId || '', a: cfg.authDomain || '',
+    e: cfg.emailGuru || ''
+  };
+  return btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
+}
+
+function applyClassCode(code){
+  try{
+    code = String(code || '').trim();
+    if(!code) return false;
+    let json;
+    try{ json = decodeURIComponent(escape(atob(code))); }
+    catch(e){ json = code; } // fallback: mungkin JSON mentah
+    const p = JSON.parse(json);
+    const apiKey = p.k || p.apiKey;
+    const databaseURL = p.u || p.databaseURL;
+    if(!apiKey || !databaseURL) throw new Error('Kode tidak valid.');
+    const existing = DB.get(KEY_CLOUD, {}) || {};
+    const cfg = {
+      apiKey, databaseURL,
+      projectId: p.p || p.projectId || '',
+      authDomain: p.a || p.authDomain || '',
+      emailGuru: p.e || p.emailGuru || existing.emailGuru || '',
+      ejsService: existing.ejsService || '',
+      ejsTemplate: existing.ejsTemplate || '',
+      ejsKey: existing.ejsKey || '',
+      autoEmail: !!existing.autoEmail
+    };
+    DB.set(KEY_CLOUD, cfg);
+    Cloud.detachListeners();
+    Cloud.enabled = false; Cloud.db = null;
+    try{ if(firebase.apps && firebase.apps.length) firebase.app().delete(); }catch(e){}
+    Cloud.init();
+    EmailService._inited = false;
+    return true;
+  }catch(e){
+    console.warn('applyClassCode', e);
+    return false;
+  }
+}
+
+function applyClassCodeFromInput(){
+  const inp = document.getElementById('cc-input');
+  const status = document.getElementById('cc-status');
+  if(!inp || !inp.value.trim()){
+    toast('Tempel kode kelas terlebih dahulu.');
+    return;
+  }
+  if(applyClassCode(inp.value)){
+    // Simpan juga agar login berikutnya siap; bersihkan input
+    inp.value = '';
+    toast('✅ Kode kelas berhasil diterapkan. Perangkat ini tersambung ke cloud guru.');
+    updateClassCodeStatus();
+    // Sinkronisasi awal
+    if(Cloud.enabled) Cloud.syncIntoLocal().catch(()=>{});
+  } else {
+    toast('❌ Kode kelas tidak valid.', 3000);
+  }
+}
+
+function clearClassCode(){
+  showConfirm({
+    icon:'⚠️', title:'Putuskan dari Cloud?',
+    msg:'Perangkat ini akan kembali menggunakan penyimpanan lokal saja. Nilai ujian baru tidak akan terkirim ke guru.',
+    okText:'Ya, Putuskan',
+    onOk:()=>{
+      DB.set(KEY_CLOUD, null);
+      Cloud.detachListeners();
+      Cloud.enabled = false; Cloud.db = null;
+      try{ if(firebase.apps && firebase.apps.length) firebase.app().delete(); }catch(e){}
+      EmailService._inited = false;
+      closeModal('ov-confirm');
+      updateClassCodeStatus();
+      toast('Perangkat diputus dari cloud.');
+    }
+  });
+}
+
+function updateClassCodeStatus(){
+  const status = document.getElementById('cc-status');
+  const btnClear = document.getElementById('cc-clear');
+  if(!status) return;
+  if(Cloud.enabled && Cloud.config && Cloud.config.databaseURL){
+    let host = Cloud.config.databaseURL.replace(/^https?:\/\//,'').split('.')[0];
+    status.textContent = '🟢 Tersambung ke cloud: ' + host;
+    status.style.color = 'var(--hijau)';
+    if(btnClear) btnClear.style.display = '';
+  } else {
+    status.textContent = '⚪ Belum tersambung ke cloud. Tempel kode kelas dari guru.';
+    status.style.color = 'var(--muted)';
+    if(btnClear) btnClear.style.display = 'none';
+  }
+}
+
+function showClassCode(){
+  try{
+    const code = generateClassCode();
+    const ta = document.getElementById('code-text');
+    ta.value = code;
+    const cfg = DB.get(KEY_CLOUD, {}) || {};
+    document.getElementById('code-meta').textContent =
+      'Database: ' + (cfg.databaseURL || '-') + ' · Email guru: ' + (cfg.emailGuru || 'belum diisi');
+    openModal('ov-code');
+  }catch(e){
+    toast('Gagal membuat kode: ' + (e.message||e), 3500);
+  }
+}
+
+function copyClassCode(){
+  const ta = document.getElementById('code-text');
+  if(!ta || !ta.value) return;
+  ta.select();
+  ta.setSelectionRange(0, 99999);
+  try{
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(ta.value).then(
+        ()=>toast('✅ Kode kelas dicopy ke clipboard.'),
+        ()=>{ document.execCommand('copy'); toast('✅ Kode kelas dicopy.'); }
+      );
+    } else {
+      document.execCommand('copy');
+      toast('✅ Kode kelas dicopy.');
+    }
+  }catch(e){
+    toast('Gagal copy. Silakan pilih manual lalu Ctrl+C.', 3000);
+  }
+}
+
+/* ==========================================================
    AUTENTIKASI
    ========================================================== */
 function switchTab(t){
@@ -1175,6 +1508,8 @@ function logout(){
   DB.set(KEY_SESS, null);
   document.getElementById('li-pass').value='';
   document.getElementById('rg-code').value='';
+  Cloud.detachListeners();
+  updateClassCodeStatus();
   go('scr-auth');
   switchTab('login');
 }
@@ -1200,7 +1535,6 @@ function loadDash(){
   document.getElementById('st-last').textContent = res.length ? res[res.length-1].skor : '-';
   document.getElementById('hist-card').style.display = 'none';
 
-  // XP bar
   const xp = getXPUser(me.user);
   const info = levelInfo(xp);
   document.getElementById('xp-lv').textContent = 'Level ' + info.lvl + ' · ' + info.name;
@@ -1209,7 +1543,19 @@ function loadDash(){
     ? (info.inLevel + ' / ' + info.span + ' XP menuju ' + info.next.name)
     : (xp + ' XP · Level Maksimal!');
 
+  // Banner cloud
+  const hint = document.getElementById('cloud-hint');
+  if(hint) hint.style.display = (Cloud.enabled ? 'none' : 'block');
+
   renderLeaderboard(me);
+}
+
+function promptClassCode(){
+  const code = prompt('Tempel Kode Kelas dari guru:');
+  if(code && code.trim()){
+    if(applyClassCode(code)){ toast('✅ Kode kelas diterapkan.'); updateClassCodeStatus(); loadDash(); }
+    else toast('❌ Kode tidak valid.', 3000);
+  }
 }
 
 function renderLeaderboard(me){
@@ -1275,6 +1621,15 @@ async function renderTeacherDash(skipCloud){
     await Cloud.syncIntoLocal().catch(()=>{});
   }
 
+  // Attach real-time listener sekali (saat guru buka dashboard)
+  if(Cloud.enabled && Cloud._listeners.length === 0){
+    const ok = Cloud.attachListeners(()=>{
+      // Setiap ada perubahan dari cloud → refresh dashboard otomatis
+      renderTeacherDash(true);
+    });
+    if(ok) console.log('✅ Real-time listeners aktif');
+  }
+
   const users = DB.get(KEY_USERS, {});
   const results = DB.get(KEY_RES, {});
 
@@ -1326,7 +1681,10 @@ async function renderTeacherDash(skipCloud){
         <td>${s.results.length}</td>
         <td>${sc}</td>
         <td>${lastSc}</td>
-        <td><button class="action-btn" onclick="viewStudent('${escapeHtml(s.username)}')">Lihat Detail</button></td>
+        <td>
+          <button class="action-btn" onclick="viewStudent('${escapeHtml(s.username)}')">Detail</button>
+          <button class="action-btn" onclick="emailStudentResult('${escapeHtml(s.username)}')">📧 Email</button>
+        </td>
       </tr>`;
     }).join('');
     wrap.innerHTML = `
@@ -1423,6 +1781,7 @@ function viewStudent(username){
 
   const actions = `
     <div class="btn-row" style="margin-top:18px">
+      <button class="btn btn-blue btn-sm" onclick="emailStudentResult('${escapeHtml(username)}')">📧 Kirim Nilai ke Email Guru</button>
       <button class="btn btn-ghost btn-sm" onclick="resetStudentPassword('${escapeHtml(username)}')">🔑 Reset Password</button>
       <button class="btn btn-danger btn-sm" onclick="confirmDeleteStudent('${escapeHtml(username)}')">🗑️ Hapus Akun Siswa</button>
     </div>
@@ -1492,7 +1851,6 @@ function showConfirm({icon, title, msg, okText, onOk}){
   const ok = document.getElementById('cf-ok');
   ok.textContent = okText || 'Ya, Lanjutkan';
   ok.disabled = false;
-  // bug fix: clear handler lama agar tidak menumpuk
   ok.onclick = null;
   ok.onclick = async ()=>{
     if(ok.disabled) return;
@@ -1531,6 +1889,67 @@ function exportCSV(){
 }
 
 /* ==========================================================
+   EMAIL - FUNGSI AKSI
+   ========================================================== */
+async function emailMyResult(){
+  const me = currentUser();
+  if(!me) return;
+  if(!EmailService.hasTeacherEmail()){
+    return toast('Email guru belum diatur. Minta guru mengisi di Pengaturan Cloud.', 4000);
+  }
+  const results = DB.get(KEY_RES, {})[me.user] || [];
+  if(!results.length) return toast('Belum ada hasil ujian untuk dikirim.');
+  const last = results[results.length - 1];
+  const btn = document.getElementById('btn-email-result');
+  const statusEl = document.getElementById('res-email-status');
+  if(btn) btn.disabled = true;
+  if(statusEl){ statusEl.textContent = '⏳ Memproses pengiriman ke ' + EmailService.teacherEmail + '...'; statusEl.style.color = 'var(--biru)'; }
+  try{
+    const r = await EmailService.send(me, last, results);
+    if(statusEl){
+      if(r.mode === 'emailjs'){
+        statusEl.textContent = '✅ Email berhasil dikirim ke ' + EmailService.teacherEmail;
+        statusEl.style.color = 'var(--hijau)';
+        toast('✅ Email terkirim.');
+      } else {
+        statusEl.textContent = '📧 Aplikasi email dibuka. Klik "Kirim" di aplikasi email Anda.';
+        statusEl.style.color = 'var(--biru)';
+      }
+    }
+  }catch(e){
+    if(statusEl){
+      statusEl.textContent = '❌ Gagal: ' + (e.message||e);
+      statusEl.style.color = 'var(--merah)';
+    }
+    toast('Gagal kirim email.', 3000);
+  } finally {
+    if(btn) btn.disabled = false;
+  }
+}
+
+async function emailStudentResult(username){
+  const users = DB.get(KEY_USERS, {});
+  const results = DB.get(KEY_RES, {})[username] || [];
+  const u = users[username];
+  if(!u) return;
+  if(!EmailService.hasTeacherEmail()){
+    return toast('Email guru belum diatur di Pengaturan Cloud.', 3500);
+  }
+  if(!results.length){
+    return toast('Siswa ini belum memiliki hasil ujian.');
+  }
+  const last = results[results.length - 1];
+  toast('⏳ Memproses pengiriman...');
+  try{
+    const r = await EmailService.send(Object.assign({user:username}, u), last, results);
+    if(r.mode === 'emailjs') toast('✅ Email terkirim ke ' + EmailService.teacherEmail);
+    else toast('📧 Aplikasi email dibuka. Klik "Kirim" untuk mengirim.');
+  }catch(e){
+    toast('Gagal: ' + (e.message||e), 3500);
+  }
+}
+
+/* ==========================================================
    CLOUD SETTINGS
    ========================================================== */
 function openCloudSettings(){
@@ -1539,6 +1958,11 @@ function openCloudSettings(){
   document.getElementById('cfg-dbUrl').value = cfg.databaseURL || '';
   document.getElementById('cfg-projectId').value = cfg.projectId || '';
   document.getElementById('cfg-authDomain').value = cfg.authDomain || '';
+  document.getElementById('cfg-emailGuru').value = cfg.emailGuru || '';
+  document.getElementById('cfg-ejs-service').value = cfg.ejsService || '';
+  document.getElementById('cfg-ejs-template').value = cfg.ejsTemplate || '';
+  document.getElementById('cfg-ejs-key').value = cfg.ejsKey || '';
+  document.getElementById('cfg-autoEmail').checked = !!cfg.autoEmail;
   const st = document.getElementById('cfg-status');
   st.className = 'cfg-status'; st.textContent = '';
   openModal('ov-cloud');
@@ -1555,7 +1979,12 @@ function getCfgFromForm(){
   const dbUrl = document.getElementById('cfg-dbUrl').value.trim().replace(/\/+$/,'');
   const projectId = document.getElementById('cfg-projectId').value.trim();
   const authDomain = document.getElementById('cfg-authDomain').value.trim();
-  return { apiKey, databaseURL: dbUrl, projectId, authDomain };
+  const emailGuru = document.getElementById('cfg-emailGuru').value.trim();
+  const ejsService = document.getElementById('cfg-ejs-service').value.trim();
+  const ejsTemplate = document.getElementById('cfg-ejs-template').value.trim();
+  const ejsKey = document.getElementById('cfg-ejs-key').value.trim();
+  const autoEmail = !!document.getElementById('cfg-autoEmail').checked;
+  return { apiKey, databaseURL: dbUrl, projectId, authDomain, emailGuru, ejsService, ejsTemplate, ejsKey, autoEmail };
 }
 
 async function testCloudConfig(){
@@ -1572,7 +2001,6 @@ async function testCloudConfig(){
       authDomain: cfg.authDomain || undefined
     }, appName);
     await testApp.database().ref('.info/connected').once('value');
-    // bug fix: cleanup app test
     try{ await testApp.delete(); }catch(e){}
     showCfgStatus('ok', '✅ Koneksi berhasil! Firebase siap digunakan.');
   }catch(e){
@@ -1586,8 +2014,10 @@ async function saveCloudConfig(){
     return showCfgStatus('err', '❌ API Key dan Database URL wajib diisi.');
   }
   DB.set(KEY_CLOUD, cfg);
+  Cloud.detachListeners();
   Cloud.enabled = false; Cloud.db = null;
   const ok = Cloud.init();
+  EmailService._inited = false;
   if(ok){
     showCfgStatus('ok', '✅ Konfigurasi disimpan. Cloud aktif!');
     const users = DB.get(KEY_USERS, {});
@@ -1617,12 +2047,15 @@ function clearCloudConfig(){
     okText:'Ya, Hapus',
     onOk:()=>{
       DB.set(KEY_CLOUD, null);
+      Cloud.detachListeners();
       Cloud.enabled = false; Cloud.db = null;
       try{ if(firebase.apps && firebase.apps.length) firebase.app().delete(); }catch(e){}
+      EmailService._inited = false;
       closeModal('ov-confirm'); closeModal('ov-cloud');
       Cloud.setStatus('offline');
       toast('Konfigurasi cloud dihapus.');
       renderTeacherDash(true);
+      updateClassCodeStatus();
     }
   });
 }
@@ -1684,7 +2117,6 @@ function buildExam(){
 
 function startExam(){
   const me = currentUser(); if(!me || me.role!=='siswa') return;
-  // bug fix: reset state lengkap setiap mulai ujian
   examState = {
     questions: buildExam(),
     answers: {},
@@ -1709,7 +2141,6 @@ function startExam(){
   sfxInit();
   toast('Ujian dimulai. Kerjakan dengan jujur!', 3000);
 
-  // Motivasi berkala
   clearInterval(motiTimerId);
   motiTimerId = setInterval(()=>{
     if(!examState || !examState.active) return;
@@ -1762,7 +2193,6 @@ function renderQ(){
   document.getElementById('q-point').textContent = (q.type==='pg' ? CFG.poinPG : q.type==='pgk' ? CFG.poinPGK : CFG.poinMatch) + ' poin';
   document.getElementById('q-text').textContent = q.q;
 
-  // flag button
   const fb = document.getElementById('q-flag');
   fb.classList.toggle('on', !!examState.flags[i]);
   fb.textContent = examState.flags[i] ? '🚩 Ditandai' : '🚩 Tandai';
@@ -1957,7 +2387,6 @@ function onVisibility(){
 }
 function onBlur(){
   if(!examState || !examState.active) return;
-  // bug fix: jangan trigger saat modal peringatan sedang terbuka
   if(anyModalOpen()) return;
   triggerViolation('Jendela ujian kehilangan fokus. Jangan membuka aplikasi atau jendela lain!');
 }
@@ -2012,10 +2441,8 @@ async function submitExam(auto){
 
   const waktuPakai = Math.max(1, Math.round((Date.now() - examState.mulai)/60000));
   const hasil = gradeExam();
-
   const benar = hasil.review.filter(r=>r.status==='benar').length;
 
-  // hitung XP
   const me = currentUser();
   let xpGain = 0, leveledUp = false;
   let newBadges = [];
@@ -2027,7 +2454,6 @@ async function submitExam(auto){
     const afterInfo = levelInfo(afterXP);
     leveledUp = afterInfo.lvl > beforeInfo.lvl;
 
-    // badges
     const prevResults = DB.get(KEY_RES, {})[me.user] || [];
     const prevBest = prevResults.length ? Math.max.apply(null, prevResults.map(r=>r.skor)) : null;
     const jmlUjian = prevResults.length + 1;
@@ -2042,7 +2468,9 @@ async function submitExam(auto){
     if(prevBest !== null && hasil.score - prevBest >= 10) if(awardBadge(me.user,'riser')) newBadges.push('riser');
   }
 
+  // ID unik agar merge antar-perangkat aman
   const resultData = {
+    id: 'r' + Date.now() + '_' + Math.random().toString(36).slice(2,7),
     tanggal: new Date().toLocaleString('id-ID',{dateStyle:'medium',timeStyle:'short'}),
     skor: hasil.score,
     benar: benar,
@@ -2058,13 +2486,18 @@ async function submitExam(auto){
     all[me.user].push(resultData);
     DB.set(KEY_RES, all);
     if(Cloud.enabled) cloudSaved = await Cloud.pushResult(me.user, resultData);
+
+    // Auto-email opsional (hanya jika EmailJS lengkap)
+    const cfg = DB.get(KEY_CLOUD, {}) || {};
+    if(cfg.autoEmail && EmailService.isFullyConfigured()){
+      EmailService.send(me, resultData, all[me.user]).catch(e=>console.warn('auto email', e));
+    }
   }
 
   renderResult(hasil, waktuPakai, auto, cloudSaved, {xpGain, leveledUp, newBadges});
   go('scr-result');
   loadDash();
 
-  // Suara & efek
   if(hasil.score >= 70){
     setTimeout(()=>{ sfxWin(); launchConfetti(); }, 400);
   } else if(hasil.score >= 50){
@@ -2146,11 +2579,21 @@ function renderResult(h, waktu, auto, cloudSaved, extra){
     syncEl.textContent = '⚠️ Gagal sinkron ke cloud. Nilai tersimpan lokal.';
     syncEl.style.color = 'var(--merah)';
   } else {
-    syncEl.textContent = '💾 Nilai tersimpan di perangkat ini (cloud belum aktif).';
+    syncEl.textContent = '💾 Nilai tersimpan di perangkat ini (belum terhubung cloud).';
     syncEl.style.color = 'var(--muted)';
   }
 
-  // XP info
+  // Reset status email
+  const emailStatus = document.getElementById('res-email-status');
+  if(emailStatus) emailStatus.textContent = '';
+
+  // Sembunyikan tombol email jika email guru belum diatur
+  const btnEmail = document.getElementById('btn-email-result');
+  if(btnEmail){
+    if(EmailService.hasTeacherEmail()) btnEmail.style.display = '';
+    else btnEmail.style.display = 'none';
+  }
+
   const xpEl = document.getElementById('res-xp');
   if(extra && me){
     let txt = '⭐ +' + extra.xpGain + ' XP diperoleh!';
@@ -2170,7 +2613,6 @@ function renderResult(h, waktu, auto, cloudSaved, extra){
     xpEl.textContent = '';
   }
 
-  // Badge grid
   const badgeGrid = document.getElementById('badge-grid');
   if(badgeGrid && me){
     const earned = getBadgesUser(me.user);
@@ -2200,7 +2642,6 @@ function renderResult(h, waktu, auto, cloudSaved, extra){
       jawabUserHtml = escapeHtml(userTxt);
       jawabBenarHtml = escapeHtml(q.correctSet.map(x=>q.opts[x]).join(' • '));
     } else {
-      // bug fix: escape tiap item dulu, baru join dengan <br>
       jawabUserHtml = q.left.map((l,k)=>{
         const v = (r.ans && r.ans[k]>=0) ? q.right[r.ans[k]] : '(belum dipasangkan)';
         return escapeHtml(l) + ' → ' + escapeHtml(v);
@@ -2227,6 +2668,7 @@ function renderResult(h, waktu, auto, cloudSaved, extra){
   seedAdmin();
   Cloud.init();
   Cloud.setStatus(Cloud.status);
+  updateClassCodeStatus();
 
   const me = currentUser();
   if(me){
@@ -2240,6 +2682,8 @@ function renderResult(h, waktu, auto, cloudSaved, extra){
   if(liPass) liPass.addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
   const rgPass = document.getElementById('rg-pass');
   if(rgPass) rgPass.addEventListener('keydown', e=>{ if(e.key==='Enter') doRegister(); });
+  const ccInput = document.getElementById('cc-input');
+  if(ccInput) ccInput.addEventListener('keydown', e=>{ if(e.key==='Enter') applyClassCodeFromInput(); });
 
   setInterval(()=>{
     if(Cloud.enabled && Cloud.status !== 'syncing') Cloud.setStatus('online');
